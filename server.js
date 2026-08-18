@@ -534,6 +534,54 @@ app.get('/api/admin/metrics', requireAdmin, (req, res) => {
   }
 });
 
+// GET /api/admin/payment-settings (Protected Admin)
+app.get('/api/admin/payment-settings', requireAdmin, (req, res) => {
+  try {
+    const settings = db.getPaymentSettings();
+    res.json({ success: true, data: settings });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/payment-settings (Protected Admin)
+app.post('/api/admin/payment-settings', requireAdmin, (req, res) => {
+  try {
+    const updated = db.updatePaymentSettings(req.body);
+    // If Razorpay keys were updated, sync runtime config
+    if (updated.razorpay_key_id && updated.razorpay_key_id !== '••••••••••••••••') {
+      RAZORPAY_CONFIG.key_id = updated.razorpay_key_id;
+      RAZORPAY_CONFIG.is_live = !updated.razorpay_key_id.startsWith('rzp_test_');
+    }
+    if (updated.razorpay_key_secret && !updated.razorpay_key_secret.includes('•••')) {
+      RAZORPAY_CONFIG.key_secret = updated.razorpay_key_secret;
+    }
+    if (updated.webhook_secret) {
+      RAZORPAY_CONFIG.webhook_secret = updated.webhook_secret;
+    }
+    res.json({ success: true, message: 'Payment & Settlement settings saved successfully.', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/orders/:id/payment-status (Protected Admin)
+app.put('/api/orders/:id/payment-status', requireAdmin, (req, res) => {
+  try {
+    const { payment_status } = req.body;
+    if (!payment_status) {
+      return res.status(400).json({ success: false, error: 'Missing payment_status in body.' });
+    }
+    const updated = db.updateOrderPaymentStatus(req.params.id, payment_status);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Order not found.' });
+    }
+    res.json({ success: true, message: `Payment status updated to ${payment_status}.`, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ----------------------------------------------------
 // 5. PINCODE & COD CHECKER API
 // ----------------------------------------------------

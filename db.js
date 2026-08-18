@@ -1071,6 +1071,59 @@ class Database {
       message: `Delivers in ${estimatedDays} business days via Insured Royal Courier. Cash on Delivery (COD) is available.`
     };
   }
+
+  // --- PAYMENT & SETTLEMENT SETTINGS ---
+  getPaymentSettings() {
+    if (!this.data.payment_settings) {
+      this.data.payment_settings = {
+        merchant_name: 'Laxmi Vastaraa Royal Atelier',
+        razorpay_key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_luxury_vastaraa',
+        razorpay_key_secret: process.env.RAZORPAY_KEY_SECRET ? '••••••••••••••••' : 'rzp_test_secret_luxury_vastaraa',
+        webhook_secret: process.env.RAZORPAY_WEBHOOK_SECRET || 'rzp_webhook_secret_2026',
+        admin_upi_id: 'laxmivastraa@okaxis',
+        settlement_bank: {
+          account_holder: 'Laxmi Vastaraa Heritage Silks Pvt Ltd',
+          account_number: '50200088991122',
+          ifsc_code: 'HDFC0000240',
+          bank_name: 'HDFC Bank Ltd',
+          branch: 'Civil Lines Branch, Jaipur'
+        },
+        cod_enabled: true,
+        max_cod_amount: 100000,
+        notification_email: 'orders@laxmivastraa.com',
+        updated_at: new Date().toISOString()
+      };
+      this.save();
+    }
+    return this.data.payment_settings;
+  }
+
+  updatePaymentSettings(updates = {}) {
+    const current = this.getPaymentSettings();
+    this.data.payment_settings = {
+      ...current,
+      ...updates,
+      settlement_bank: {
+        ...(current.settlement_bank || {}),
+        ...(updates.settlement_bank || {})
+      },
+      updated_at: new Date().toISOString()
+    };
+    this.save();
+    return this.data.payment_settings;
+  }
+
+  updateOrderPaymentStatus(orderIdOrNumber, newPaymentStatus) {
+    const order = this.getOrderById(orderIdOrNumber);
+    if (!order) return null;
+    order.payment_status = newPaymentStatus;
+    if (newPaymentStatus === 'Paid' && !order.paid_at) {
+      order.paid_at = new Date().toISOString();
+    }
+    order.updated_at = new Date().toISOString();
+    this.save();
+    return order;
+  }
 }
 
 export const db = new Database();

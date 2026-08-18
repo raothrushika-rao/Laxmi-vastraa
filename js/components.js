@@ -813,3 +813,134 @@ export function renderSearchModal() {
     </div>
   `;
 }
+
+// ----------------------------------------------------
+// ADMIN ORDER INSPECTOR MODAL
+// ----------------------------------------------------
+export function renderAdminOrderModal() {
+  if (!store.selectedOrderModal) return '';
+  const order = store.selectedOrderModal;
+  const isPaid = order.payment_status === 'Paid';
+  const isCod = order.payment_status === 'Pending (COD)' || order.payment_method?.includes('COD');
+
+  return `
+    <div id="admin-order-modal-backdrop" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div class="w-full max-w-2xl bg-white rounded-2xl overflow-hidden shadow-2xl border-2 border-antique-gold/40 max-h-[90vh] flex flex-col animate-scale-up">
+        
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-old-wine to-primary p-5 text-white flex justify-between items-center">
+          <div>
+            <span class="text-[10px] uppercase tracking-[0.2em] text-antique-gold font-bold block">Consignment & Payment Dossier</span>
+            <h3 class="font-serif font-bold text-lg">Order Ref: ${order.order_number || order.order_id}</h3>
+          </div>
+          <button id="close-admin-order-modal" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-6 overflow-y-auto space-y-6 text-xs text-neutral-800">
+          
+          <!-- Key Indicators Banner -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Payment Method</span>
+              <strong class="text-deep-charcoal text-xs">${order.payment_method}</strong>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Payment Status</span>
+              <span class="inline-block font-mono font-bold text-[10px] uppercase px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-900' : isCod ? 'bg-amber-100 text-amber-900' : 'bg-red-100 text-red-900'}">
+                ${order.payment_status}
+              </span>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Fulfillment</span>
+              <span class="font-bold text-deep-charcoal text-xs">${order.order_status || 'Placed'}</span>
+            </div>
+          </div>
+
+          <!-- Transaction & Gateway Reference Hash -->
+          <div class="p-4 rounded-xl bg-surface border border-antique-gold/30 space-y-2">
+            <h4 class="font-serif font-bold text-xs uppercase tracking-wider text-old-wine flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">receipt</span>
+              <span>Financial Audit & Transaction IDs</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-[11px]">
+              <div><strong>Gateway Payment ID:</strong> ${order.gateway_payment_id || 'N/A (Cash on Delivery)'}</div>
+              <div><strong>Gateway Order ID:</strong> ${order.gateway_order_id || 'N/A'}</div>
+              <div><strong>Transaction Timestamp:</strong> ${order.paid_at ? new Date(order.paid_at).toLocaleString('en-IN') : 'Awaiting Doorstep Collection'}</div>
+              <div><strong>Created At:</strong> ${new Date(order.created_at).toLocaleString('en-IN')}</div>
+            </div>
+          </div>
+
+          <!-- Customer & Delivery Coordinates -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-neutral-200 bg-white">
+            <div>
+              <h4 class="font-serif font-bold text-xs uppercase tracking-wider text-deep-charcoal mb-1">Customer Patron</h4>
+              <p class="font-bold text-sm text-deep-charcoal">${order.customer_name}</p>
+              <p class="text-neutral-600 mt-1">📞 ${order.customer_phone}</p>
+              <p class="text-neutral-600">✉️ ${order.customer_email || 'client@laxmivastraa.com'}</p>
+            </div>
+            <div>
+              <h4 class="font-serif font-bold text-xs uppercase tracking-wider text-deep-charcoal mb-1">Dispatch Destination</h4>
+              <p class="text-neutral-700 leading-relaxed">${order.shipping_address}</p>
+              <p class="font-semibold text-deep-charcoal">${order.city}, ${order.state} - ${order.pincode}</p>
+            </div>
+          </div>
+
+          <!-- Line Items Breakdown -->
+          <div class="space-y-3">
+            <h4 class="font-serif font-bold text-xs uppercase tracking-wider text-deep-charcoal">Purchased Saree Heirlooms</h4>
+            <div class="divide-y divide-neutral-100 border border-neutral-200 rounded-xl overflow-hidden">
+              ${(order.items || []).map(item => `
+                <div class="p-3 bg-white flex justify-between items-center gap-3">
+                  <div class="flex items-center gap-3">
+                    ${item.image_url ? `<img src="${item.image_url}" class="w-12 h-14 object-cover rounded border" />` : ''}
+                    <div>
+                      <strong class="font-serif text-deep-charcoal block">${item.saree_title || 'Royal Saree'}</strong>
+                      <span class="text-[10px] text-neutral-500 font-mono">${item.saree_id} • Qty: ${item.quantity} • Blouse: ${item.blouse_option}</span>
+                    </div>
+                  </div>
+                  <span class="font-serif font-bold text-sm text-old-wine">₹${(item.unit_price * item.quantity).toLocaleString('en-IN')}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Total Invoice Calculation -->
+          <div class="p-4 rounded-xl bg-surface-container-low border border-antique-gold/20 flex justify-between items-center text-xs">
+            <div class="space-y-0.5">
+              <span>Subtotal: ₹${(order.subtotal || order.total_amount).toLocaleString('en-IN')}</span>
+              ${order.discount > 0 ? `<span class="block text-green-700 font-bold">Privilege Discount: -₹${order.discount.toLocaleString('en-IN')}</span>` : ''}
+              <span class="block text-green-700">Insured Handover: FREE</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Total Settlement Amount</span>
+              <strong class="font-serif text-xl font-bold text-old-wine">₹${order.total_amount.toLocaleString('en-IN')}</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="bg-neutral-100 p-4 border-t border-neutral-200 flex justify-between items-center">
+          <button 
+            type="button" 
+            onclick="window.print()" 
+            class="px-4 py-2 rounded border border-neutral-300 bg-white hover:bg-neutral-50 text-deep-charcoal font-bold text-xs flex items-center gap-1.5"
+          >
+            <span class="material-symbols-outlined text-[16px]">print</span> Print Consignment Note
+          </button>
+          
+          <button 
+            id="close-admin-order-modal-btn" 
+            class="bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-wider px-6 py-2 rounded"
+          >
+            Close Dossier
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+}

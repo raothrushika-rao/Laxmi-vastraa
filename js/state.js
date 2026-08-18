@@ -875,6 +875,76 @@ class Store {
     });
   }
 
+  // --- ADMIN PAYMENT & SETTLEMENT SETTINGS ---
+  async fetchPaymentSettings() {
+    try {
+      const res = await fetch('/api/admin/payment-settings', {
+        headers: this.getAuthHeaders()
+      });
+      if (res.ok) {
+        const json = await res.json();
+        this.paymentSettings = json.data;
+        this.notify('PAYMENT_SETTINGS_UPDATED', this.paymentSettings);
+        return this.paymentSettings;
+      }
+    } catch (err) {
+      console.warn('Error fetching payment settings:', err);
+    }
+    return null;
+  }
+
+  async savePaymentSettings(settings) {
+    try {
+      const res = await fetch('/api/admin/payment-settings', {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(settings)
+      });
+      const json = await res.json();
+      if (json.success) {
+        this.paymentSettings = json.data;
+        this.showToast('Payment & settlement settings saved successfully.', 'success');
+        this.notify('PAYMENT_SETTINGS_UPDATED', this.paymentSettings);
+        return { success: true, data: json.data };
+      }
+      this.showToast(json.error || 'Failed to save payment settings.', 'error');
+      return { success: false, error: json.error };
+    } catch (err) {
+      this.showToast(err.message, 'error');
+      return { success: false, error: err.message };
+    }
+  }
+
+  async updateOrderPaymentStatus(orderId, paymentStatus) {
+    try {
+      const res = await fetch(`/api/orders/${orderId}/payment-status`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ payment_status: paymentStatus })
+      });
+      const json = await res.json();
+      if (json.success) {
+        const order = this.orders.find(o => o.order_id === orderId || o.order_number === orderId);
+        if (order) {
+          order.payment_status = paymentStatus;
+          if (paymentStatus === 'Paid' && !order.paid_at) {
+            order.paid_at = new Date().toISOString();
+          }
+        }
+        this.saveOrders();
+        this.showToast(`Payment status updated to "${paymentStatus}".`, 'success');
+        this.notify('ORDERS_UPDATED', this.orders);
+        await this.fetchMetrics();
+        return { success: true };
+      }
+      this.showToast(json.error || 'Failed to update payment status.', 'error');
+      return { success: false };
+    } catch (err) {
+      this.showToast(err.message, 'error');
+      return { success: false };
+    }
+  }
+
   // Local Storage Synchronizers
   saveProducts() {
     try {

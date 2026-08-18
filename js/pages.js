@@ -1349,6 +1349,9 @@ export function renderAdminPage() {
         <button class="admin-tab-btn py-3 border-b-2 ${activeTab === 'orders' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="orders">
           Customer Orders (${orders.length})
         </button>
+        <button class="admin-tab-btn py-3 border-b-2 ${activeTab === 'payments' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="payments">
+          Payment & Bank Settlement
+        </button>
       </div>
 
       <!-- Tab Content: Inventory Management -->
@@ -1428,21 +1431,26 @@ export function renderAdminPage() {
             </table>
           </div>
         </div>
-      ` : `
+      ` : activeTab === 'orders' ? `
         <!-- Tab Content: Customer Orders -->
         <div class="bg-surface-container-lowest rounded-xl border border-antique-gold/30 shadow-sm overflow-hidden p-6 space-y-4">
-          <h2 class="font-serif font-bold text-lg text-deep-charcoal">All Customer Orders</h2>
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <h2 class="font-serif font-bold text-lg text-deep-charcoal">Customer Consignments & Transactions</h2>
+              <p class="text-xs text-neutral-500">Live feed of prepaid online payments and Cash on Delivery reservations</p>
+            </div>
+          </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
               <thead>
                 <tr class="border-b border-neutral-200 bg-surface-container-low text-neutral-600 uppercase tracking-wider">
-                  <th class="p-3">Order ID / Date</th>
-                  <th class="p-3">Customer Details</th>
-                  <th class="p-3">Total Amount</th>
-                  <th class="p-3">Payment</th>
-                  <th class="p-3">Fulfillment Status</th>
-                  <th class="p-3 text-right">Update Status</th>
+                  <th class="p-3">Order Ref / Date</th>
+                  <th class="p-3">Customer Contact</th>
+                  <th class="p-3">Amount</th>
+                  <th class="p-3">Payment Status</th>
+                  <th class="p-3">Fulfillment</th>
+                  <th class="p-3 text-right">Inspect & Manage</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-neutral-100">
@@ -1451,33 +1459,34 @@ export function renderAdminPage() {
                     <td class="p-3">
                       <strong class="font-mono text-old-wine block">${order.order_number || order.order_id}</strong>
                       <span class="text-neutral-400 text-[10px]">${new Date(order.created_at).toLocaleDateString('en-IN')}</span>
+                      ${order.gateway_payment_id ? `<span class="block text-[9px] text-neutral-500 font-mono">ID: ${order.gateway_payment_id.slice(0, 15)}...</span>` : ''}
                     </td>
                     <td class="p-3">
                       <strong class="text-deep-charcoal block">${order.customer_name}</strong>
                       <span class="text-neutral-500">${order.city}, ${order.state} • ${order.customer_phone}</span>
                     </td>
-                    <td class="p-3 font-serif font-bold">₹${order.total_amount.toLocaleString('en-IN')}</td>
+                    <td class="p-3 font-serif font-bold text-sm">₹${order.total_amount.toLocaleString('en-IN')}</td>
                     <td class="p-3">
-                      <span class="font-semibold block text-[11px] text-deep-charcoal">${order.payment_method}</span>
-                      <span class="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase mt-0.5 ${
-                        order.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                        order.payment_status === 'Pending (COD)' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
-                        order.payment_status === 'Failed' ? 'bg-red-100 text-red-800 border border-red-300' :
-                        'bg-slate-100 text-slate-700 border border-slate-300'
-                      }">${order.payment_status}</span>
+                      <div class="space-y-1">
+                        <span class="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
+                          order.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                          order.payment_status === 'Pending (COD)' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                          order.payment_status === 'Failed' ? 'bg-red-100 text-red-800 border border-red-300' :
+                          'bg-slate-100 text-slate-700 border border-slate-300'
+                        }">${order.payment_status}</span>
+                        <select 
+                          class="admin-order-payment-status-select block text-[10px] p-1 border border-neutral-300 rounded bg-white"
+                          data-id="${order.order_id}"
+                        >
+                          <option value="Paid" ${order.payment_status === 'Paid' ? 'selected' : ''}>Mark Paid</option>
+                          <option value="Pending (COD)" ${order.payment_status === 'Pending (COD)' ? 'selected' : ''}>Pending (COD)</option>
+                          <option value="Failed" ${order.payment_status === 'Failed' ? 'selected' : ''}>Mark Failed</option>
+                        </select>
+                      </div>
                     </td>
                     <td class="p-3">
-                      <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                        order.order_status === 'Delivered' ? 'bg-green-100 text-green-800' :
-                        order.order_status === 'Shipped' ? 'bg-blue-100 text-blue-800' :
-                        'bg-amber-100 text-amber-800'
-                      }">
-                        ${order.order_status || 'Placed'}
-                      </span>
-                    </td>
-                    <td class="p-3 text-right">
                       <select 
-                        class="admin-order-status-select text-xs p-1.5 border border-neutral-300 rounded bg-white"
+                        class="admin-order-status-select text-xs p-1.5 border border-neutral-300 rounded bg-white font-semibold"
                         data-id="${order.order_id}"
                       >
                         <option value="Placed" ${order.order_status === 'Placed' ? 'selected' : ''}>Placed</option>
@@ -1486,11 +1495,219 @@ export function renderAdminPage() {
                         <option value="Delivered" ${order.order_status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                       </select>
                     </td>
+                    <td class="p-3 text-right">
+                      <button 
+                        class="admin-order-inspect-btn inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-antique-gold bg-surface hover:bg-surface-container text-old-wine font-bold text-xs shadow-sm transition-colors"
+                        data-id="${order.order_id}"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                        <span>Invoice & Details</span>
+                      </button>
+                    </td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
           </div>
+        </div>
+      ` : `
+        <!-- Tab Content: Payment & Bank Settlement Settings -->
+        <div class="bg-surface-container-lowest rounded-xl border border-antique-gold/30 shadow-sm p-6 sm:p-8 space-y-8">
+          
+          <div class="border-b border-antique-gold/20 pb-4">
+            <span class="text-xs uppercase tracking-[0.2em] text-antique-gold font-bold">Financial Settlement Hub</span>
+            <h2 class="font-serif font-bold text-2xl text-deep-charcoal mt-1">Admin Payment Gateway & Bank Account Details</h2>
+            <p class="text-xs text-neutral-600 mt-1">
+              Configure the exact credentials and destination bank accounts where customer order payments are settled.
+            </p>
+          </div>
+
+          <form id="admin-payment-settings-form" class="space-y-8">
+            
+            <!-- Section 1: Razorpay Gateway Configuration -->
+            <div class="space-y-4 p-5 rounded-xl bg-surface-container-low border border-antique-gold/30">
+              <div class="flex items-center gap-2 pb-2 border-b border-neutral-200">
+                <span class="material-symbols-outlined text-old-wine">payments</span>
+                <h3 class="font-serif font-bold text-sm text-deep-charcoal">1. Razorpay Gateway API Credentials (Online UPI & Cards)</h3>
+              </div>
+              <p class="text-xs text-neutral-600">
+                Obtain these keys from your <a href="https://dashboard.razorpay.com/#/access/api-keys" target="_blank" class="text-old-wine font-bold underline">Razorpay Dashboard → Settings → API Keys</a>.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Razorpay Key ID *</label>
+                  <input 
+                    type="text" 
+                    id="admin-rzp-key-id" 
+                    name="razorpay_key_id"
+                    value="${store.paymentSettings?.razorpay_key_id || 'rzp_test_luxury_vastaraa'}" 
+                    placeholder="rzp_test_... or rzp_live_..."
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine font-mono"
+                    required
+                  />
+                  <span class="text-[10px] text-neutral-400">Public key used to launch customer checkout.</span>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Razorpay Key Secret *</label>
+                  <input 
+                    type="password" 
+                    id="admin-rzp-key-secret" 
+                    name="razorpay_key_secret"
+                    value="${store.paymentSettings?.razorpay_key_secret || '••••••••••••••••'}" 
+                    placeholder="Enter Key Secret"
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine font-mono"
+                    required
+                  />
+                  <span class="text-[10px] text-neutral-400">Used for server-side HMAC-SHA256 signature verification.</span>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Webhook Secret</label>
+                  <input 
+                    type="text" 
+                    id="admin-rzp-webhook-secret" 
+                    name="webhook_secret"
+                    value="${store.paymentSettings?.webhook_secret || 'rzp_webhook_secret_2026'}" 
+                    placeholder="Secret for /api/webhooks/razorpay"
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine font-mono"
+                  />
+                  <span class="text-[10px] text-neutral-400">Webhook URL: <code class="text-old-wine">https://yourdomain.com/api/webhooks/razorpay</code></span>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Admin UPI Virtual Payment Address (VPA)</label>
+                  <input 
+                    type="text" 
+                    id="admin-upi-id" 
+                    name="admin_upi_id"
+                    value="${store.paymentSettings?.admin_upi_id || 'laxmivastraa@okaxis'}" 
+                    placeholder="yourstore@okhdfcbank"
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine font-mono"
+                  />
+                  <span class="text-[10px] text-neutral-400">Receives direct instant UPI customer payments.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Settlement Bank Account Details -->
+            <div class="space-y-4 p-5 rounded-xl bg-surface-container-low border border-antique-gold/30">
+              <div class="flex items-center gap-2 pb-2 border-b border-neutral-200">
+                <span class="material-symbols-outlined text-old-wine">account_balance</span>
+                <h3 class="font-serif font-bold text-sm text-deep-charcoal">2. Atelier Settlement Bank Account (Where Revenue is Deposited)</h3>
+              </div>
+              <p class="text-xs text-neutral-600">
+                Razorpay automatically settles funds to this bank account (T+2 settlement schedule).
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Account Beneficiary Name *</label>
+                  <input 
+                    type="text" 
+                    id="admin-bank-holder" 
+                    name="account_holder"
+                    value="${store.paymentSettings?.settlement_bank?.account_holder || 'Laxmi Vastaraa Heritage Silks Pvt Ltd'}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Bank Account Number *</label>
+                  <input 
+                    type="text" 
+                    id="admin-bank-number" 
+                    name="account_number"
+                    value="${store.paymentSettings?.settlement_bank?.account_number || '50200088991122'}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Bank Name *</label>
+                  <input 
+                    type="text" 
+                    id="admin-bank-name" 
+                    name="bank_name"
+                    value="${store.paymentSettings?.settlement_bank?.bank_name || 'HDFC Bank Ltd'}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">IFSC Code *</label>
+                  <input 
+                    type="text" 
+                    id="admin-bank-ifsc" 
+                    name="ifsc_code"
+                    value="${store.paymentSettings?.settlement_bank?.ifsc_code || 'HDFC0000240'}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine uppercase font-mono"
+                    required
+                  />
+                </div>
+
+                <div class="md:col-span-2">
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Bank Branch Location</label>
+                  <input 
+                    type="text" 
+                    id="admin-bank-branch" 
+                    name="branch"
+                    value="${store.paymentSettings?.settlement_bank?.branch || 'Civil Lines Branch, Jaipur, Rajasthan'}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Cash on Delivery (COD) Rules -->
+            <div class="space-y-4 p-5 rounded-xl bg-surface-container-low border border-antique-gold/30">
+              <div class="flex items-center gap-2 pb-2 border-b border-neutral-200">
+                <span class="material-symbols-outlined text-old-wine">local_shipping</span>
+                <h3 class="font-serif font-bold text-sm text-deep-charcoal">3. Cash on Delivery (COD) Policy</h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <label class="flex items-center gap-2 cursor-pointer p-3 bg-white rounded border border-neutral-300">
+                  <input 
+                    type="checkbox" 
+                    id="admin-cod-enabled" 
+                    name="cod_enabled" 
+                    ${store.paymentSettings?.cod_enabled !== false ? 'checked' : ''} 
+                    class="text-old-wine focus:ring-old-wine" 
+                  />
+                  <span class="font-bold text-deep-charcoal">Enable Insured Cash on Delivery for Customers</span>
+                </label>
+
+                <div>
+                  <label class="block font-bold text-neutral-700 uppercase text-[10px] mb-1">Max COD Order Value (INR)</label>
+                  <input 
+                    type="number" 
+                    id="admin-max-cod" 
+                    name="max_cod_amount"
+                    value="${store.paymentSettings?.max_cod_amount || 100000}" 
+                    class="w-full p-2.5 rounded border border-neutral-300 focus:border-old-wine"
+                  />
+                  <span class="text-[10px] text-neutral-400">Orders exceeding this value require upfront online payment.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end pt-4">
+              <button 
+                type="submit" 
+                class="bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-xl shadow-lg hover:scale-[1.01] transition-all flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[18px]">save</span> Save Payment & Settlement Settings
+              </button>
+            </div>
+
+          </form>
+
         </div>
       `}
 

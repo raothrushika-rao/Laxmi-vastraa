@@ -5,7 +5,8 @@ import {
   renderFooter, 
   renderQuickViewModal, 
   renderCartDrawer, 
-  renderSearchModal 
+  renderSearchModal,
+  renderAdminOrderModal
 } from './components.js';
 import { 
   renderHomePage, 
@@ -154,6 +155,11 @@ function renderApp() {
       break;
 
     case 'admin':
+      if (!store.paymentSettings && store.isAdmin()) {
+        store.fetchPaymentSettings().then(() => {
+          if (store.currentRoute === 'admin') renderApp();
+        });
+      }
       mainContainer.innerHTML = renderAdminPage();
       break;
 
@@ -184,6 +190,7 @@ function renderOverlays() {
     ${renderQuickViewModal(quickViewProduct)}
     ${renderCartDrawer()}
     ${renderSearchModal()}
+    ${renderAdminOrderModal()}
   `;
 }
 
@@ -493,6 +500,24 @@ function bindEventListeners() {
       return;
     }
 
+    // Admin Order Inspector Dossier Modal
+    const adminOrderInspectBtn = e.target.closest('.admin-order-inspect-btn');
+    if (adminOrderInspectBtn) {
+      const id = adminOrderInspectBtn.getAttribute('data-id');
+      const order = store.getOrders().find(o => o.order_id === id || o.order_number === id);
+      if (order) {
+        store.selectedOrderModal = order;
+        renderOverlays();
+      }
+      return;
+    }
+
+    if (e.target.closest('#close-admin-order-modal, #close-admin-order-modal-btn') || (e.target.id === 'admin-order-modal-backdrop')) {
+      store.selectedOrderModal = null;
+      renderOverlays();
+      return;
+    }
+
     const adminDeleteBtn = e.target.closest('.admin-delete-saree-btn');
     if (adminDeleteBtn) {
       const id = adminDeleteBtn.getAttribute('data-id');
@@ -776,6 +801,64 @@ function bindEventListeners() {
       return;
     }
 
+    // Admin Payment & Settlement Settings Form Submission
+    if (e.target.id === 'admin-payment-settings-form') {
+      e.preventDefault();
+      const rzpKeyId = document.getElementById('admin-rzp-key-id')?.value?.trim();
+      const rzpKeySecret = document.getElementById('admin-rzp-key-secret')?.value?.trim();
+      const webhookSecret = document.getElementById('admin-rzp-webhook-secret')?.value?.trim();
+      const adminUpiId = document.getElementById('admin-upi-id')?.value?.trim();
+      const accountHolder = document.getElementById('admin-bank-holder')?.value?.trim();
+      const accountNumber = document.getElementById('admin-bank-number')?.value?.trim();
+      const bankName = document.getElementById('admin-bank-name')?.value?.trim();
+      const ifscCode = document.getElementById('admin-bank-ifsc')?.value?.trim();
+      const branch = document.getElementById('admin-bank-branch')?.value?.trim();
+      const codEnabled = document.getElementById('admin-cod-enabled')?.checked;
+      const maxCodAmount = parseFloat(document.getElementById('admin-max-cod')?.value || '100000');
+
+      await store.savePaymentSettings({
+        razorpay_key_id: rzpKeyId,
+        razorpay_key_secret: rzpKeySecret,
+        webhook_secret: webhookSecret,
+        admin_upi_id: adminUpiId,
+        cod_enabled: codEnabled,
+        max_cod_amount: maxCodAmount,
+        settlement_bank: {
+          account_holder: accountHolder,
+          account_number: accountNumber,
+          bank_name: bankName,
+          ifsc_code: ifscCode,
+          branch: branch
+        }
+      });
+      return;
+    }
+
+  });
+
+  // Change Event Delegation
+  document.addEventListener('change', async (e) => {
+    // Admin Payment Status Update
+    const paymentSelect = e.target.closest('.admin-order-payment-status-select');
+    if (paymentSelect) {
+      const id = paymentSelect.getAttribute('data-id');
+      const newStatus = paymentSelect.value;
+      if (id && newStatus) {
+        await store.updateOrderPaymentStatus(id, newStatus);
+      }
+      return;
+    }
+
+    // Admin Fulfillment Status Update
+    const orderStatusSelect = e.target.closest('.admin-order-status-select');
+    if (orderStatusSelect) {
+      const id = orderStatusSelect.getAttribute('data-id');
+      const newStatus = orderStatusSelect.value;
+      if (id && newStatus) {
+        await store.updateOrderStatus(id, newStatus);
+      }
+      return;
+    }
   });
 }
 

@@ -46,8 +46,17 @@ class RazorpayClient {
 
     const amountInRupees = (orderData.amount / 100).toLocaleString('en-IN');
 
-    // 1. If official Razorpay SDK is available on window
-    if (window.Razorpay && orderData.key_id && !orderData.key_id.startsWith('rzp_test_mock')) {
+    // Check if a real, registered Razorpay merchant key is provided in environment
+    const isRealMerchantKey = Boolean(
+      orderData.key_id && 
+      orderData.key_id !== 'rzp_test_luxury_vastaraa' && 
+      !orderData.key_id.includes('luxury_vastaraa') && 
+      !orderData.key_id.includes('mock') && 
+      (orderData.key_id.startsWith('rzp_live_') || (orderData.key_id.startsWith('rzp_test_') && orderData.key_id.length >= 22))
+    );
+
+    // 1. If official Razorpay SDK is available on window and real merchant key is present
+    if (window.Razorpay && isRealMerchantKey) {
       try {
         const options = {
           key: orderData.key_id,
@@ -170,67 +179,102 @@ class RazorpayClient {
         </div>
 
         <!-- Payment Instrument Tabs / Selection -->
-        <div class="p-6 space-y-4">
-          <label class="block text-xs font-semibold text-neutral-700">Choose Instant Payment Method</label>
+        <div class="p-5 space-y-4">
+          
+          <!-- Method Selector Tabs -->
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" class="rzp-tab-btn active p-2.5 rounded-xl border-2 border-antique-gold bg-surface text-old-wine font-bold text-xs flex flex-col items-center gap-1 shadow-sm transition-all" data-tab="upi">
+              <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+              <span>UPI / QR</span>
+            </button>
+            <button type="button" class="rzp-tab-btn p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-600 font-semibold text-xs flex flex-col items-center gap-1 hover:border-antique-gold transition-all" data-tab="card">
+              <span class="material-symbols-outlined text-[20px]">credit_card</span>
+              <span>Cards</span>
+            </button>
+            <button type="button" class="rzp-tab-btn p-2.5 rounded-xl border border-neutral-200 bg-white text-neutral-600 font-semibold text-xs flex flex-col items-center gap-1 hover:border-antique-gold transition-all" data-tab="netbanking">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+              <span>NetBanking</span>
+            </button>
+          </div>
 
-          <div class="space-y-2.5">
-            
-            <label class="flex items-center justify-between p-3 rounded-xl border border-antique-gold bg-surface cursor-pointer hover:bg-surface-container transition-colors">
-              <div class="flex items-center gap-3">
-                <input type="radio" name="rzp-sim-method" value="upi" checked class="text-old-wine focus:ring-old-wine" />
-                <div>
-                  <strong class="block text-xs font-semibold text-deep-charcoal">Instant UPI / QR Scanner</strong>
-                  <span class="text-[10px] text-neutral-500">Google Pay, PhonePe, Paytm, BHIM</span>
-                </div>
+          <!-- Tab 1: UPI & QR Scanner -->
+          <div id="rzp-tab-content-upi" class="space-y-3 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-xs">
+            <div class="flex items-center gap-3">
+              <div class="w-16 h-16 bg-white p-1 rounded-lg border border-neutral-300 shadow-inner shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-deep-charcoal">
+                  <path fill="currentColor" d="M10 10h30v30h-30zM20 20h10v10h-10zM60 10h30v30h-30zM70 20h10v10h-10zM10 60h30v30h-30zM20 70h10v10h-10zM55 55h10v10h-10zM75 55h15v10h-15zM55 75h20v15h-20zM80 80h10v10h-10z"/>
+                </svg>
               </div>
-              <span class="material-symbols-outlined text-old-wine text-[22px]">qr_code_2</span>
-            </label>
-
-            <label class="flex items-center justify-between p-3 rounded-xl border border-neutral-200 hover:border-antique-gold bg-white cursor-pointer transition-colors">
-              <div class="flex items-center gap-3">
-                <input type="radio" name="rzp-sim-method" value="card" class="text-old-wine focus:ring-old-wine" />
-                <div>
-                  <strong class="block text-xs font-semibold text-deep-charcoal">Credit / Debit Card</strong>
-                  <span class="text-[10px] text-neutral-500">Visa, MasterCard, RuPay, Amex</span>
-                </div>
+              <div>
+                <strong class="block font-serif text-deep-charcoal">Scan with any UPI App</strong>
+                <p class="text-[10px] text-neutral-500 mt-0.5">Google Pay, PhonePe, Paytm, BHIM</p>
+                <span class="inline-block mt-1 text-[10px] bg-green-100 text-green-800 font-bold px-2 py-0.5 rounded">UPI Autopay Ready</span>
               </div>
-              <span class="material-symbols-outlined text-neutral-600 text-[22px]">credit_card</span>
-            </label>
+            </div>
+            <div>
+              <label class="block text-[10px] uppercase font-bold text-neutral-500 mb-1">Or Enter Virtual Payment Address (VPA)</label>
+              <input type="text" value="${orderData.customer?.phone || '9829012345'}@upi" class="w-full text-xs p-2.5 rounded border border-neutral-300 focus:border-old-wine bg-white" />
+            </div>
+          </div>
 
-            <label class="flex items-center justify-between p-3 rounded-xl border border-neutral-200 hover:border-antique-gold bg-white cursor-pointer transition-colors">
-              <div class="flex items-center gap-3">
-                <input type="radio" name="rzp-sim-method" value="netbanking" class="text-old-wine focus:ring-old-wine" />
-                <div>
-                  <strong class="block text-xs font-semibold text-deep-charcoal">NetBanking (Top 50+ Banks)</strong>
-                  <span class="text-[10px] text-neutral-500">HDFC, ICICI, SBI, Axis, Kotak</span>
-                </div>
+          <!-- Tab 2: Credit / Debit Cards -->
+          <div id="rzp-tab-content-card" class="space-y-3 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-xs hidden">
+            <div>
+              <label class="block text-[10px] uppercase font-bold text-neutral-500 mb-1">Card Number</label>
+              <input type="text" value="4532 •••• •••• 8899" class="w-full text-xs p-2.5 rounded border border-neutral-300 focus:border-old-wine bg-white font-mono" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-neutral-500 mb-1">Expiry</label>
+                <input type="text" value="12/28" class="w-full text-xs p-2.5 rounded border border-neutral-300 focus:border-old-wine bg-white text-center font-mono" />
               </div>
-              <span class="material-symbols-outlined text-neutral-600 text-[22px]">account_balance</span>
-            </label>
+              <div>
+                <label class="block text-[10px] uppercase font-bold text-neutral-500 mb-1">CVV</label>
+                <input type="password" value="888" class="w-full text-xs p-2.5 rounded border border-neutral-300 focus:border-old-wine bg-white text-center font-mono" />
+              </div>
+            </div>
+          </div>
 
+          <!-- Tab 3: NetBanking -->
+          <div id="rzp-tab-content-netbanking" class="space-y-2 p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-xs hidden">
+            <label class="block text-[10px] uppercase font-bold text-neutral-500 mb-1">Select Bank</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 p-2 rounded border border-antique-gold bg-white cursor-pointer text-[11px] font-semibold text-deep-charcoal">
+                <input type="radio" name="rzp-bank" checked class="text-old-wine" /> HDFC Bank
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded border border-neutral-200 bg-white cursor-pointer text-[11px] font-semibold text-deep-charcoal">
+                <input type="radio" name="rzp-bank" class="text-old-wine" /> ICICI Bank
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded border border-neutral-200 bg-white cursor-pointer text-[11px] font-semibold text-deep-charcoal">
+                <input type="radio" name="rzp-bank" class="text-old-wine" /> State Bank of India
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded border border-neutral-200 bg-white cursor-pointer text-[11px] font-semibold text-deep-charcoal">
+                <input type="radio" name="rzp-bank" class="text-old-wine" /> Axis Bank
+              </label>
+            </div>
           </div>
 
           <!-- Customer info chip -->
-          <div class="bg-neutral-50 p-3 rounded-lg border border-neutral-200 text-[11px] text-neutral-600 space-y-0.5">
+          <div class="bg-surface p-3 rounded-lg border border-antique-gold/20 text-[11px] text-neutral-600 space-y-0.5">
             <div><strong>Patron:</strong> ${orderData.customer?.name}</div>
             <div><strong>Contact:</strong> ${orderData.customer?.phone} • ${orderData.customer?.email}</div>
           </div>
         </div>
 
         <!-- Modal Actions -->
-        <div class="p-6 pt-0 space-y-2">
+        <div class="p-5 pt-0 space-y-2">
           <button 
             id="rzp-sim-pay-success-btn"
             class="w-full bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
           >
-            <span class="material-symbols-outlined text-[18px]">verified</span> Authorize & Pay ₹${amountInRupees}
+            <span class="material-symbols-outlined text-[18px]">verified</span> Complete Payment & Confirm (₹${amountInRupees})
           </button>
 
           <button 
             id="rzp-sim-pay-fail-btn"
             class="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold text-xs py-2.5 rounded-lg transition-colors"
           >
-            Simulate Transaction Failure
+            Simulate Decline / Bank Error
           </button>
         </div>
 
@@ -245,10 +289,35 @@ class RazorpayClient {
 
     document.body.appendChild(container);
 
-    // Event Handlers for Sandbox Modal
-    const closeBtn = document.getElementById('rzp-modal-close-btn');
-    const paySuccessBtn = document.getElementById('rzp-sim-pay-success-btn');
-    const payFailBtn = document.getElementById('rzp-sim-pay-fail-btn');
+    // Tab Switching Handlers
+    const tabBtns = container.querySelectorAll('.rzp-tab-btn');
+    const tabContents = {
+      upi: document.getElementById('rzp-tab-content-upi'),
+      card: document.getElementById('rzp-tab-content-card'),
+      netbanking: document.getElementById('rzp-tab-content-netbanking')
+    };
+
+    tabBtns.forEach(btn => {
+      btn.onclick = () => {
+        const tab = btn.getAttribute('data-tab');
+        tabBtns.forEach(b => {
+          b.classList.remove('active', 'border-2', 'border-antique-gold', 'bg-surface', 'text-old-wine', 'shadow-sm');
+          b.classList.add('border-neutral-200', 'bg-white', 'text-neutral-600');
+        });
+        btn.classList.add('active', 'border-2', 'border-antique-gold', 'bg-surface', 'text-old-wine', 'shadow-sm');
+        btn.classList.remove('border-neutral-200', 'bg-white', 'text-neutral-600');
+
+        Object.keys(tabContents).forEach(key => {
+          if (tabContents[key]) {
+            if (key === tab) {
+              tabContents[key].classList.remove('hidden');
+            } else {
+              tabContents[key].classList.add('hidden');
+            }
+          }
+        });
+      };
+    });
 
     const closeModal = () => {
       container.remove();

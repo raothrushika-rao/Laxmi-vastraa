@@ -1,0 +1,681 @@
+{
+  "sarees": [
+    {
+      "id": "saree-001",
+      "sku": "LV-BAN-001",
+      "title": "Midnight Blue Brocade Banarasi Silk Saree",
+      "slug": "midnight-blue-brocade-banarasi",
+      "description": "An ode to twilight in the sacred ghats of Varanasi. Woven on traditional pit-looms with genuine tested gold zari and pure mulberry katan silk over 45 days.",
+      "price": 48500,
+      "compare_at_price": 58000,
+      "fabric": "Banarasi",
+      "weave_type": "Zari Brocade",
+      "primary_color": "Royal Blue",
+      "work_type": "Kadwa Jaal & Floral Bootis",
+      "occasion": "Bridal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 2,
+      "stock_status": "low_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": true,
+      "rating": 4.9,
+      "reviews_count": 24,
+      "created_at": "2026-08-03T15:43:09.966Z",
+      "images": [
+        {
+          "id": "img-001-1",
+          "saree_id": "saree-001",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw",
+          "alt_text": "Midnight Blue Brocade Banarasi Full View",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-001-2",
+          "saree_id": "saree-001",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Pallu Zari Detail Close-up",
+          "is_primary": false,
+          "display_order": 2
+        },
+        {
+          "id": "img-001-3",
+          "saree_id": "saree-001",
+          "image_url": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Blouse Piece & Border Weave",
+          "is_primary": false,
+          "display_order": 3
+        }
+      ]
+    },
+    {
+      "id": "saree-002",
+      "sku": "LV-KAN-002",
+      "title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+      "slug": "crimson-antique-gold-korvai-kanjeevaram",
+      "description": "Interlocked using the ancient Korvai technique with solid temple borders and pure silver electroplated in 24k gold. Heirloom weight of 920 grams pure silk.",
+      "price": 64000,
+      "compare_at_price": 76000,
+      "fabric": "Kanjeevaram",
+      "weave_type": "Handloom",
+      "primary_color": "Maroon",
+      "work_type": "Korvai Temple Borders & Mayil Motifs",
+      "occasion": "Bridal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 4,
+      "stock_status": "in_stock",
+      "reorder_level": 3,
+      "is_active": true,
+      "is_featured": true,
+      "rating": 5,
+      "reviews_count": 31,
+      "created_at": "2026-08-06T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-002-1",
+          "saree_id": "saree-002",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Crimson & Gold Korvai Kanjeevaram Saree",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-002-2",
+          "saree_id": "saree-002",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw",
+          "alt_text": "Korvai Joint & Pallu Detail",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    },
+    {
+      "id": "saree-003",
+      "sku": "LV-CHA-003",
+      "title": "Emerald Tissue Chanderi with Meenakari Butis",
+      "slug": "emerald-tissue-chanderi-meenakari",
+      "description": "Sheer silk-cotton tissue interwoven with micro-spun gold zari and hand-enamelled floral meenakari motifs. Ethereal, lightweight, and luminous.",
+      "price": 32500,
+      "compare_at_price": 38000,
+      "fabric": "Chanderi",
+      "weave_type": "Handloom",
+      "primary_color": "Emerald Green",
+      "work_type": "Meenakari Floral Bootis",
+      "occasion": "Festive",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 6,
+      "stock_status": "in_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": true,
+      "rating": 4.8,
+      "reviews_count": 14,
+      "created_at": "2026-08-08T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-003-1",
+          "saree_id": "saree-003",
+          "image_url": "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Emerald Tissue Chanderi Saree",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-003-2",
+          "saree_id": "saree-003",
+          "image_url": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Chanderi Zari Pallu Detail",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    },
+    {
+      "id": "saree-004",
+      "sku": "LV-PAT-004",
+      "title": "Patan Royal Purple Double Ikat Patola Saree",
+      "slug": "patan-royal-purple-double-ikat-patola",
+      "description": "An engineering masterpiece created by the Salvi master weavers of Patan. Warp and weft are tie-dyed individually with botanical pigments before handloom weaving.",
+      "price": 115000,
+      "compare_at_price": 135000,
+      "fabric": "Kanjeevaram",
+      "weave_type": "Ikat",
+      "primary_color": "Wine",
+      "work_type": "Double Ikat Geometric & Elephants",
+      "occasion": "Formal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 1,
+      "stock_status": "low_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": false,
+      "rating": 5,
+      "reviews_count": 9,
+      "created_at": "2026-08-10T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-004-1",
+          "saree_id": "saree-004",
+          "image_url": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Patan Double Ikat Patola Saree",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-004-2",
+          "saree_id": "saree-004",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw",
+          "alt_text": "Double Ikat Weave Detail",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    },
+    {
+      "id": "saree-005",
+      "sku": "LV-ORG-005",
+      "title": "Blush Rose Katan Organza with Hand-Cut Zari",
+      "slug": "blush-rose-katan-organza-zari",
+      "description": "Delicate spun sheer organza featuring antique gold cutwork kadwa borders and shimmering rose petal undertones. Perfect for contemporary cocktail receptions.",
+      "price": 36000,
+      "compare_at_price": 42000,
+      "fabric": "Organza",
+      "weave_type": "Handloom",
+      "primary_color": "Pink",
+      "work_type": "Hand Cutwork Zari Borders",
+      "occasion": "Formal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 5,
+      "stock_status": "in_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": true,
+      "rating": 4.7,
+      "reviews_count": 12,
+      "created_at": "2026-08-12T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-005-1",
+          "saree_id": "saree-005",
+          "image_url": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Blush Rose Katan Organza Saree",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-005-2",
+          "saree_id": "saree-005",
+          "image_url": "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Organza Border Texture",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    },
+    {
+      "id": "saree-006",
+      "sku": "LV-TUS-006",
+      "title": "Ivory & Mustard Handpainted Kalamkari Tussar",
+      "slug": "ivory-mustard-handpainted-kalamkari-tussar",
+      "description": "Wild kosa tussar silk organically textured with natural river dyes. Illustrating mythological courtly garden motifs with fine bamboo pen detailing.",
+      "price": 28500,
+      "compare_at_price": 34000,
+      "fabric": "Cotton",
+      "weave_type": "Printed",
+      "primary_color": "Ivory",
+      "work_type": "Pen Kalamkari & Vegetable Dyes",
+      "occasion": "Festive",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 4,
+      "stock_status": "in_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": false,
+      "rating": 4.9,
+      "reviews_count": 19,
+      "created_at": "2026-08-13T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-006-1",
+          "saree_id": "saree-006",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Kalamkari Tussar Silk Saree",
+          "is_primary": true,
+          "display_order": 1
+        }
+      ]
+    },
+    {
+      "id": "saree-007",
+      "sku": "LV-BRI-007",
+      "title": "Maharani Gold Shikargah Brocade Saree",
+      "slug": "maharani-gold-shikargah-brocade-saree",
+      "description": "The pinnacle of Varanasi weaving. Intricate hunting expedition tableaux with running motifs of royal deer, swans, and palatial foliage in 24k gold zari.",
+      "price": 89000,
+      "compare_at_price": 105000,
+      "fabric": "Banarasi",
+      "weave_type": "Zari Brocade",
+      "primary_color": "Gold",
+      "work_type": "Full Shikargah Hunting Scenes in Real Zari",
+      "occasion": "Bridal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 3,
+      "stock_status": "in_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": true,
+      "rating": 5,
+      "reviews_count": 27,
+      "created_at": "2026-08-15T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-007-1",
+          "saree_id": "saree-007",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw",
+          "alt_text": "Maharani Gold Shikargah Saree Front",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-007-2",
+          "saree_id": "saree-007",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Shikargah Pallu Detail",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    },
+    {
+      "id": "saree-008",
+      "sku": "LV-BAN-008",
+      "title": "Rani Pink Kadhwa Jangla Banarasi Pure Silk Saree",
+      "slug": "rani-pink-kadhwa-jangla-banarasi",
+      "description": "A masterpiece created with interlocking floral vines (Jangla) that spread continuously across the fabric without breaks. Heavy ceremonial border and regal sheen.",
+      "price": 54000,
+      "compare_at_price": 65000,
+      "fabric": "Banarasi",
+      "weave_type": "Zari Brocade",
+      "primary_color": "Pink",
+      "work_type": "Full Jangla Floral Vines in Gold & Silver",
+      "occasion": "Bridal",
+      "saree_length": "5.5m Saree + 0.8m Blouse",
+      "blouse_included": true,
+      "stock_quantity": 4,
+      "stock_status": "in_stock",
+      "reorder_level": 2,
+      "is_active": true,
+      "is_featured": false,
+      "rating": 4.9,
+      "reviews_count": 15,
+      "created_at": "2026-08-16T15:43:09.967Z",
+      "images": [
+        {
+          "id": "img-008-1",
+          "saree_id": "saree-008",
+          "image_url": "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Rani Pink Jangla Banarasi Saree",
+          "is_primary": true,
+          "display_order": 1
+        },
+        {
+          "id": "img-008-2",
+          "saree_id": "saree-008",
+          "image_url": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80",
+          "alt_text": "Jangla Weaving Close-up",
+          "is_primary": false,
+          "display_order": 2
+        }
+      ]
+    }
+  ],
+  "orders": [
+    {
+      "order_id": "ord-1787069100156",
+      "order_number": "LV-2026-007",
+      "customer_uid": "usr-test-1787069100150",
+      "customer_name": "Princess Gayatri of Jaipur",
+      "customer_email": "patron.test@heritage.in",
+      "customer_phone": "+91 99999 88888",
+      "shipping_address": "Rambagh Palace Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 66500,
+      "discount": 5000,
+      "shipping_fee": 0,
+      "total_amount": 61500,
+      "created_at": "2026-08-18T16:05:00.156Z",
+      "items": [
+        {
+          "id": "item-1787069100156-60",
+          "order_id": "ord-1787069100156",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787068711435",
+      "order_number": "LV-2026-006",
+      "customer_uid": "usr-test-1787068711425",
+      "customer_name": "Princess Gayatri of Jaipur",
+      "customer_email": "patron.test@heritage.in",
+      "customer_phone": "+91 99999 88888",
+      "shipping_address": "Rambagh Palace Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 66500,
+      "discount": 5000,
+      "shipping_fee": 0,
+      "total_amount": 61500,
+      "created_at": "2026-08-18T15:58:31.435Z",
+      "items": [
+        {
+          "id": "item-1787068711435-302",
+          "order_id": "ord-1787068711435",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787068600724",
+      "order_number": "LV-2026-005",
+      "customer_uid": "usr-test-1787068600712",
+      "customer_name": "Princess Gayatri of Jaipur",
+      "customer_email": "patron.test@heritage.in",
+      "customer_phone": "+91 99999 88888",
+      "shipping_address": "Rambagh Palace Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 64000,
+      "discount": 5000,
+      "shipping_fee": 0,
+      "total_amount": 59000,
+      "created_at": "2026-08-18T15:56:40.724Z",
+      "items": [
+        {
+          "id": "item-1787068600724-957",
+          "order_id": "ord-1787068600724",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787068025927",
+      "order_number": "LV-2026-004",
+      "customer_name": "Princess Gayatri Devi",
+      "customer_email": "gayatri@palace.in",
+      "customer_phone": "+91 98765 43210",
+      "shipping_address": "City Palace, Main Gates",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302002",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Shipped",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "created_at": "2026-08-18T15:47:05.927Z",
+      "items": [
+        {
+          "id": "item-ord-1787068025927-1",
+          "order_id": "ord-1787068025927",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "saree_sku": "LV-BAN-001",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787067942988",
+      "order_number": "LV-2026-003",
+      "customer_name": "Princess Gayatri Devi",
+      "customer_email": "gayatri@palace.in",
+      "customer_phone": "+91 98765 43210",
+      "shipping_address": "City Palace, Main Gates",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302002",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Shipped",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "created_at": "2026-08-18T15:45:42.988Z",
+      "items": [
+        {
+          "id": "item-ord-1787067942988-1",
+          "order_id": "ord-1787067942988",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "saree_sku": "LV-BAN-001",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-101",
+      "order_number": "LV-2026-001",
+      "customer_name": "Maharani Gayatri Devi",
+      "customer_email": "gayatridevi@palace.in",
+      "customer_phone": "+91 98765 43210",
+      "shipping_address": "Bungalow 4, Palace Road, Civil Lines",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302006",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Processing",
+      "subtotal": 64000,
+      "discount": 6400,
+      "shipping_fee": 0,
+      "total_amount": 57600,
+      "created_at": "2026-08-16T15:43:09.967Z",
+      "items": [
+        {
+          "id": "item-101-1",
+          "order_id": "ord-101",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-102",
+      "order_number": "LV-2026-002",
+      "customer_name": "Dr. Radhika Sen",
+      "customer_email": "radhika.sen@gmail.com",
+      "customer_phone": "+91 98200 12345",
+      "shipping_address": "Flat 12B, Sea Green Apartments, Worli",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400018",
+      "payment_method": "COD",
+      "payment_status": "Pending",
+      "order_status": "Placed",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "created_at": "2026-08-17T15:43:09.967Z",
+      "items": [
+        {
+          "id": "item-102-1",
+          "order_id": "ord-102",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree"
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "uid": "admin-uid-001",
+      "full_name": "Laxmi Vastaraa Royal Curator",
+      "email": "admin@laxmivastaraa.com",
+      "phone_number": "+91 98290 12345",
+      "role": "admin",
+      "shipping_address": {
+        "street": "1 Royal Atelier Boulevard",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302001"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002"
+      ],
+      "created_at": "2026-07-19T15:52:44.409Z",
+      "updated_at": "2026-08-18T15:52:44.409Z"
+    },
+    {
+      "uid": "customer-uid-001",
+      "full_name": "Radha Sharma",
+      "email": "radha.sharma@heritage.in",
+      "phone_number": "+91 98765 43210",
+      "role": "customer",
+      "shipping_address": {
+        "street": "102 Heritage Lane",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302001"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-003"
+      ],
+      "created_at": "2026-07-29T15:52:44.409Z",
+      "updated_at": "2026-08-18T15:52:44.409Z"
+    },
+    {
+      "uid": "usr-test-1787068600712",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test@heritage.in",
+      "phone_number": "+91 98111 22334",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Palace Gardens, C-Scheme",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302001"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-003"
+      ],
+      "created_at": "2026-08-18T15:56:40.718Z",
+      "updated_at": "2026-08-18T15:57:45.926Z"
+    },
+    {
+      "uid": "usr-test-1787068711425",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test.1787068711425@heritage.in",
+      "phone_number": "+91 99999 88888",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302005"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002",
+        "saree-004"
+      ],
+      "created_at": "2026-08-18T15:58:31.428Z",
+      "updated_at": "2026-08-18T15:58:31.432Z"
+    },
+    {
+      "uid": "usr-test-1787069075572",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test.1787069075572@heritage.in",
+      "phone_number": "+91 99999 88888",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302005"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002",
+        "saree-004"
+      ],
+      "created_at": "2026-08-18T16:04:35.572Z",
+      "updated_at": "2026-08-18T16:04:35.575Z"
+    },
+    {
+      "uid": "usr-test-1787069100150",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test.1787069100150@heritage.in",
+      "phone_number": "+91 99999 88888",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302005"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002",
+        "saree-004"
+      ],
+      "created_at": "2026-08-18T16:05:00.151Z",
+      "updated_at": "2026-08-18T16:05:00.153Z"
+    }
+  ]
+}

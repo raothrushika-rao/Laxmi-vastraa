@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laxmi Vastraa | Woven for Eternity • Royal Heirloom Sarees</title>
+  <meta name="description" content="Laxmi Vastraa presents certified pure silk Indian handloom sarees including Royal Banarasi, Kanchipuram Korvai, Chanderi Tissue, and Heritage Bridal weaves." />
+  <meta name="keywords" content="Laxmi Vastraa, Banarasi saree, Kanjeevaram silk, Pure Silk Mark, bridal saree, Indian handloom, royal saree" />
+  <meta name="theme-color" content="#71001e" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+
+  <!-- Google Fonts: Playfair Display & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN with full configuration -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#490010",
+            "primary-container": "#71001e",
+            "on-primary": "#ffffff",
+            "old-wine": "#71001E",
+            "antique-gold": "#D4AF37",
+            "secondary": "#735c00",
+            "secondary-container": "#fed65b",
+            "ivory-cream": "#FDFBF7",
+            "deep-charcoal": "#1A1A1A",
+            "soft-blush": "#FFCFD2",
+            "background": "#FFF8F7",
+            "surface": "#FFF8F7",
+            "surface-dim": "#ebd5d5",
+            "surface-bright": "#fff8f7",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#fff0f0",
+            "surface-container": "#ffe9e9",
+            "surface-container-high": "#fae3e3",
+            "surface-container-highest": "#f4dddd",
+            "surface-variant": "#f4dddd",
+            "on-surface": "#241919",
+            "on-surface-variant": "#574142",
+            "inverse-surface": "#3b2d2e",
+            "inverse-on-surface": "#ffedec"
+          },
+          fontFamily: {
+            serif: ["'Playfair Display'", "Georgia", "serif"],
+            sans: ["'Montserrat'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+            "headline-md": ["'Playfair Display'", "serif"],
+            "display-lg": ["'Playfair Display'", "serif"],
+            "body-md": ["'Montserrat'", "sans-serif"],
+            "body-lg": ["'Montserrat'", "sans-serif"]
+          },
+          maxWidth: {
+            "container-max": "1280px"
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Bespoke Heritage Luxe Styles -->
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="bg-background text-on-surface font-sans antialiased min-h-screen flex flex-col selection:bg-antique-gold selection:text-white">
+
+  <!-- Header Mount -->
+  <div id="header-root"></div>
+
+  <!-- Main Content Route View -->
+  <main id="main-content" class="flex-grow pt-[64px] md:pt-[72px]"></main>
+
+  <!-- Footer Mount -->
+  <div id="footer-root"></div>
+
+  <!-- Modals, Overlays & Drawers Root -->
+  <div id="overlay-root"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

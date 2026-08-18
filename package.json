@@ -1,0 +1,25 @@
+{
+  "name": "laxmi-vastraa",
+  "version": "1.0.0",
+  "description": "Laxmi Vastraa - Luxury Indian Heritage E-Commerce",
+  "type": "module",
+  "scripts": {
+    "test": "node scratch/test_suite.js",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "saree",
+    "luxury",
+    "ecommerce",
+    "handloom",
+    "banarasi",
+    "kanjeevaram"
+  ],
+  "author": "Laxmi Vastraa",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "isomorphic-git": "^1.41.5"
+  }
+}

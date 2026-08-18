@@ -126,6 +126,7 @@ function renderApp() {
       mainContainer.innerHTML = renderCheckoutPage();
       break;
 
+    case 'order-success':
     case 'confirmation':
       mainContainer.innerHTML = renderOrderSuccessPage();
       break;
@@ -685,19 +686,41 @@ function bindEventListeners() {
     // Checkout Form
     if (e.target.id === 'checkout-main-form') {
       e.preventDefault();
-      const name = document.getElementById('cust-name').value;
-      const phone = document.getElementById('cust-phone').value;
-      const email = document.getElementById('cust-email').value;
-      const address = document.getElementById('cust-address').value;
-      const city = document.getElementById('cust-city').value;
-      const state = document.getElementById('cust-state').value;
-      const pin = document.getElementById('cust-pin').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+      const name = document.getElementById('cust-name')?.value?.trim();
+      const phone = document.getElementById('cust-phone')?.value?.trim();
+      const email = document.getElementById('cust-email')?.value?.trim();
+      const address = document.getElementById('cust-address')?.value?.trim();
+      const city = document.getElementById('cust-city')?.value?.trim();
+      const state = document.getElementById('cust-state')?.value?.trim();
+      const pin = document.getElementById('cust-pin')?.value?.trim();
       const paymentMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'Online Payment';
 
-      await store.placeOrder({
-        shippingAddress: { name, phone, email, address, city, state, pin },
-        paymentMethod
-      });
+      if (!name || !phone || !address || !pin) {
+        store.showToast('Please fill all required delivery details.', 'warning');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> Initializing Gateway...`;
+      }
+
+      try {
+        await store.placeOrder({
+          shippingAddress: { name, phone, email, address, city, state, pin },
+          paymentMethod
+        });
+      } catch (err) {
+        console.warn('Checkout submission:', err);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      }
       return;
     }
 

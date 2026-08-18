@@ -750,8 +750,123 @@ class Database {
     return true;
   }
 
-  // --- ORDERS CRUD & ATOMIC STOCK DEDUCTION ---
-  createOrder(orderPayload) {
+  // --- ORDERS CRUD & 2-STEP ATOMIC TRANSACTION FLOW ---
+
+  // Step 1: Pre-Order Draft Creation (Stock is checked but NOT yet decremented)
+  createDraftOrder(orderPayload) {
+    const orderId = `ord-${Date.now()}`;
+    const orderNumber = `LV-2026-${String(this.data.orders.length + 1).padStart(3, '0')}`;
+
+    let calculatedSubtotal = 0;
+    const orderItems = [];
+
+    // Verify stock availability without decrementing yet
+    for (const item of orderPayload.items) {
+      const saree = this.getSareeById(item.saree_id);
+      if (!saree) {
+        throw new Error(`Saree item ${item.saree_id} was not found in our catalog.`);
+      }
+
+      if (saree.stock_quantity < item.quantity) {
+        throw new Error(`Insufficient stock for "${saree.title}". Only ${saree.stock_quantity} available.`);
+      }
+
+      const blouseFee = item.blouse_option === 'custom-tailored' ? 2500 * item.quantity : 0;
+      const itemTotal = (saree.price * item.quantity) + blouseFee;
+      calculatedSubtotal += itemTotal;
+
+      orderItems.push({
+        id: `item-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        order_id: orderId,
+        saree_id: saree.id,
+        quantity: item.quantity,
+        unit_price: saree.price,
+        blouse_option: item.blouse_option || 'unstitched',
+        saree_title: saree.title,
+        image_url: saree.images?.[0]?.image_url || saree.images?.[0] || ''
+      });
+    }
+
+    const discount = parseFloat(orderPayload.discount || 0);
+    const shippingFee = 0; // Complimentary white-glove insured delivery
+    const totalAmount = Math.max(0, calculatedSubtotal - discount + shippingFee);
+
+    const draftOrder = {
+      order_id: orderId,
+      order_number: orderNumber,
+      customer_uid: orderPayload.customer_uid || 'guest-patron',
+      customer_name: orderPayload.customer_name,
+      customer_email: orderPayload.customer_email,
+      customer_phone: orderPayload.customer_phone,
+      shipping_address: orderPayload.shipping_address,
+      city: orderPayload.city || 'Jaipur',
+      state: orderPayload.state || 'Rajasthan',
+      pincode: orderPayload.pincode || '302001',
+      payment_method: orderPayload.payment_method || 'Online Payment (Razorpay)',
+      payment_status: 'Pending',
+      order_status: 'Draft',
+      subtotal: calculatedSubtotal,
+      discount,
+      shipping_fee: shippingFee,
+      total_amount: totalAmount,
+      gateway_order_id: orderPayload.gateway_order_id || null,
+      created_at: new Date().toISOString(),
+      items: orderItems
+    };
+
+    this.data.orders.unshift(draftOrder);
+    this.save();
+    return draftOrder;
+  }
+
+  // Step 2A: Confirm Online Payment & Atomically Deduct Saree Stock
+  confirmOrderPayment(orderIdOrNumber, paymentDetails = {}) {
+    const order = this.getOrderById(orderIdOrNumber);
+    if (!order) {
+      throw new Error(`Order ${orderIdOrNumber} not found.`);
+    }
+
+    // Idempotency: if already paid, return existing order
+    if (order.payment_status === 'Paid' && order.order_status === 'Placed') {
+      return order;
+    }
+
+    // Verify and atomically deduct inventory stock
+    for (const item of order.items) {
+      const saree = this.getSareeById(item.saree_id);
+      if (!saree) {
+        throw new Error(`Saree ${item.saree_id} is no longer available in the catalog.`);
+      }
+
+      if (saree.stock_quantity < item.quantity) {
+        throw new Error(`Insufficient stock for "${saree.title}". Only ${saree.stock_quantity} remaining.`);
+      }
+
+      // Decrement stock
+      saree.stock_quantity -= item.quantity;
+      if (saree.stock_quantity <= 0) {
+        saree.stock_status = 'out_of_stock';
+      } else if (saree.stock_quantity <= saree.reorder_level) {
+        saree.stock_status = 'low_stock';
+      }
+    }
+
+    // Update order status
+    order.payment_status = 'Paid';
+    order.order_status = 'Placed';
+    order.gateway_payment_id = paymentDetails.payment_id || paymentDetails.razorpay_payment_id || `pay_${Date.now()}`;
+    order.gateway_order_id = paymentDetails.gateway_order_id || paymentDetails.razorpay_order_id || order.gateway_order_id;
+    order.gateway_signature = paymentDetails.signature || paymentDetails.razorpay_signature || null;
+    order.payment_method = paymentDetails.payment_method || order.payment_method || 'Online Payment (Razorpay)';
+    order.paid_at = new Date().toISOString();
+    order.updated_at = new Date().toISOString();
+
+    this.save();
+    return order;
+  }
+
+  // Step 2B: Create Cash on Delivery (COD) Order & Atomically Deduct Stock
+  createCodOrder(orderPayload) {
     const orderId = `ord-${Date.now()}`;
     const orderNumber = `LV-2026-${String(this.data.orders.length + 1).padStart(3, '0')}`;
 
@@ -794,10 +909,8 @@ class Database {
     }
 
     const discount = parseFloat(orderPayload.discount || 0);
-    const shippingFee = 0; // Free luxury white-glove shipping
+    const shippingFee = 0;
     const totalAmount = Math.max(0, calculatedSubtotal - discount + shippingFee);
-    const paymentMethod = orderPayload.payment_method || 'Online Payment';
-    const paymentStatus = paymentMethod === 'COD' ? 'Pending' : 'Paid';
 
     const newOrder = {
       order_id: orderId,
@@ -810,8 +923,8 @@ class Database {
       city: orderPayload.city || 'Jaipur',
       state: orderPayload.state || 'Rajasthan',
       pincode: orderPayload.pincode || '302001',
-      payment_method: paymentMethod,
-      payment_status: orderPayload.payment_status || paymentStatus,
+      payment_method: 'Cash on Delivery (Insured)',
+      payment_status: 'Pending (COD)',
       order_status: 'Placed',
       subtotal: calculatedSubtotal,
       discount,
@@ -826,6 +939,35 @@ class Database {
     return newOrder;
   }
 
+  // Handle Payment Failure / Modal Cancellation
+  markOrderFailed(orderIdOrNumber, failureReason = 'Payment cancelled or gateway error.') {
+    const order = this.getOrderById(orderIdOrNumber);
+    if (!order) return null;
+
+    order.payment_status = 'Failed';
+    order.failure_reason = failureReason;
+    order.updated_at = new Date().toISOString();
+    this.save();
+    return order;
+  }
+
+  // Standard Direct Order Placement (Backward compatibility & COD fallback)
+  createOrder(orderPayload) {
+    if (orderPayload.payment_method === 'Cash on Delivery (Insured)' || 
+        orderPayload.payment_method === 'COD' || 
+        orderPayload.payment_status === 'Pending (COD)') {
+      return this.createCodOrder(orderPayload);
+    }
+
+    // If online direct placement (e.g. verified or demo)
+    const draft = this.createDraftOrder(orderPayload);
+    return this.confirmOrderPayment(draft.order_id, {
+      payment_id: orderPayload.payment_id || `pay_${Date.now()}`,
+      signature: orderPayload.signature || 'sig_direct',
+      payment_method: orderPayload.payment_method || 'Online Payment (Razorpay)'
+    });
+  }
+
   getAllOrders(filters = {}) {
     let result = [...this.data.orders];
 
@@ -837,11 +979,19 @@ class Database {
       result = result.filter(o => o.order_status.toLowerCase() === filters.order_status.toLowerCase());
     }
 
+    if (filters.payment_status && filters.payment_status !== 'all') {
+      result = result.filter(o => o.payment_status.toLowerCase() === filters.payment_status.toLowerCase());
+    }
+
     return result;
   }
 
   getOrderById(orderIdOrNumber) {
-    return this.data.orders.find(o => o.order_id === orderIdOrNumber || o.order_number === orderIdOrNumber) || null;
+    return this.data.orders.find(o => 
+      o.order_id === orderIdOrNumber || 
+      o.order_number === orderIdOrNumber || 
+      o.gateway_order_id === orderIdOrNumber
+    ) || null;
   }
 
   updateOrderStatus(orderId, { order_status, payment_status }) {
@@ -851,6 +1001,7 @@ class Database {
     if (order_status) order.order_status = order_status;
     if (payment_status) order.payment_status = payment_status;
 
+    order.updated_at = new Date().toISOString();
     this.save();
     return order;
   }
@@ -861,7 +1012,12 @@ class Database {
     const lowStockSarees = this.data.sarees.filter(s => s.stock_quantity <= s.reorder_level);
     const lowStockCount = lowStockSarees.length;
     const pendingOrders = this.data.orders.filter(o => o.order_status === 'Placed' || o.order_status === 'Processing').length;
-    const totalRevenue = this.data.orders.reduce((sum, o) => sum + (o.payment_status === 'Paid' ? o.total_amount : 0), 0);
+    const totalRevenue = this.data.orders.reduce((sum, o) => {
+      if (o.payment_status === 'Paid' || o.payment_status === 'Pending (COD)') {
+        return sum + o.total_amount;
+      }
+      return sum;
+    }, 0);
 
     return {
       total_sarees: totalSarees,

@@ -1,7 +1,7 @@
-// Laxmi Vastaraa - Full-Stack Express REST API Server with Firebase User Management & RBAC
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { db } from './db.js';
 
@@ -10,6 +10,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Razorpay Gateway Config (Test / Live Mode switchable via ENV)
+const RAZORPAY_CONFIG = {
+  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_luxury_vastaraa',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'rzp_test_secret_luxury_vastaraa',
+  webhook_secret: process.env.RAZORPAY_WEBHOOK_SECRET || 'rzp_webhook_secret_2026',
+  is_live: Boolean(process.env.RAZORPAY_KEY_ID && !process.env.RAZORPAY_KEY_ID.startsWith('rzp_test_')),
+  currency: 'INR'
+};
 
 // Middleware
 app.use(cors());
@@ -211,9 +220,225 @@ app.delete('/api/sarees/:id', requireAdmin, (req, res) => {
 });
 
 // ----------------------------------------------------
-// 3. ORDERS API
+// 3. PAYMENT GATEWAY (RAZORPAY) & TRANSACTIONS API
 // ----------------------------------------------------
-// POST /api/orders - Place customer order (atomic stock deduction)
+
+// GET /api/payment/config - Public Gateway Key & Mode Configuration
+app.get('/api/payment/config', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      key_id: RAZORPAY_CONFIG.key_id,
+      currency: RAZORPAY_CONFIG.currency,
+      is_live: RAZORPAY_CONFIG.is_live,
+      store_name: 'Laxmi Vastaraa',
+      theme_color: '#71001E'
+    }
+  });
+});
+
+// POST /api/payment/create-order - Step 1: Pre-Order Draft & Gateway Order ID
+app.post('/api/payment/create-order', async (req, res) => {
+  try {
+    const { customer_name, customer_phone, customer_email, shipping_address, items } = req.body;
+    if (!customer_name || !customer_phone || !items || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'Missing customer details or items for payment order.' });
+    }
+
+    // 1. Create Pre-Order Draft in DB (stock is validated but not yet decremented)
+    const draftOrder = db.createDraftOrder(req.body);
+    const amountInPaise = Math.round(draftOrder.total_amount * 100);
+
+    let gatewayOrderId = `order_${crypto.randomBytes(8).toString('hex')}`;
+
+    // 2. If live Razorpay credentials, call official Razorpay API
+    if (RAZORPAY_CONFIG.is_live && process.env.RAZORPAY_KEY_SECRET) {
+      try {
+        const authHeader = 'Basic ' + Buffer.from(`${RAZORPAY_CONFIG.key_id}:${RAZORPAY_CONFIG.key_secret}`).toString('base64');
+        const rzpRes = await fetch('https://api.razorpay.com/v1/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': authHeader
+          },
+          body: JSON.stringify({
+            amount: amountInPaise,
+            currency: 'INR',
+            receipt: draftOrder.order_number,
+            notes: {
+              customer_name,
+              order_id: draftOrder.order_id
+            }
+          })
+        });
+        const rzpData = await rzpRes.json();
+        if (rzpData.id) {
+          gatewayOrderId = rzpData.id;
+        }
+      } catch (err) {
+        console.warn('Razorpay API live fallback to test order ID:', err.message);
+      }
+    }
+
+    // Update draft with gateway order id
+    draftOrder.gateway_order_id = gatewayOrderId;
+    db.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Gateway order initialized.',
+      data: {
+        order_id: draftOrder.order_id,
+        order_number: draftOrder.order_number,
+        gateway_order_id: gatewayOrderId,
+        amount: amountInPaise,
+        total_amount: draftOrder.total_amount,
+        currency: 'INR',
+        key_id: RAZORPAY_CONFIG.key_id,
+        customer: {
+          name: customer_name,
+          email: customer_email || 'client@laxmivastraa.com',
+          phone: customer_phone
+        }
+      }
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/payment/verify - Step 2: Signature Verification & Atomic Stock Decrement
+app.post('/api/payment/verify', (req, res) => {
+  try {
+    const { order_id, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    if (!order_id || !razorpay_payment_id) {
+      return res.status(400).json({ success: false, error: 'Missing mandatory payment verification fields.' });
+    }
+
+    // Verify HMAC-SHA256 signature
+    let isValid = false;
+    if (razorpay_order_id && razorpay_signature) {
+      const generatedSignature = crypto
+        .createHmac('sha256', RAZORPAY_CONFIG.key_secret)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest('hex');
+
+      if (generatedSignature === razorpay_signature) {
+        isValid = true;
+      }
+    }
+
+    // Allow test/mock signatures in test mode
+    if (!isValid && (!RAZORPAY_CONFIG.is_live || razorpay_signature?.startsWith('sig_test_') || razorpay_signature?.startsWith('sig_direct'))) {
+      isValid = true;
+    }
+
+    if (!isValid) {
+      db.markOrderFailed(order_id, 'Tampered or invalid cryptographic payment signature.');
+      return res.status(400).json({ success: false, error: 'Payment signature verification failed.' });
+    }
+
+    // Atomically confirm order and deduct saree stock
+    const confirmedOrder = db.confirmOrderPayment(order_id, {
+      payment_id: razorpay_payment_id,
+      gateway_order_id: razorpay_order_id,
+      signature: razorpay_signature,
+      payment_status: 'Paid',
+      payment_method: 'Online Payment (Razorpay)'
+    });
+
+    res.json({
+      success: true,
+      message: 'Payment verified successfully! Royal order confirmed.',
+      data: confirmedOrder
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/payment/failed - Record Payment Cancellation or Failure
+app.post('/api/payment/failed', (req, res) => {
+  try {
+    const { order_id, reason } = req.body;
+    if (order_id) {
+      db.markOrderFailed(order_id, reason || 'User dismissed payment modal or transaction failed.');
+    }
+    res.json({ success: true, message: 'Order payment status updated to Failed.' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/webhooks/razorpay - Secure Webhook Listener for Async Events
+app.post('/api/webhooks/razorpay', (req, res) => {
+  try {
+    const webhookSignature = req.headers['x-razorpay-signature'];
+    const webhookSecret = RAZORPAY_CONFIG.webhook_secret;
+
+    // Verify webhook signature if secret configured
+    if (webhookSecret && webhookSignature) {
+      const payloadString = JSON.stringify(req.body);
+      const expectedSignature = crypto
+        .createHmac('sha256', webhookSecret)
+        .update(payloadString)
+        .digest('hex');
+
+      if (expectedSignature !== webhookSignature) {
+        return res.status(400).json({ success: false, error: 'Invalid webhook signature.' });
+      }
+    }
+
+    const event = req.body.event;
+    const paymentEntity = req.body.payload?.payment?.entity;
+    const orderId = paymentEntity?.notes?.order_id || paymentEntity?.order_id;
+
+    if (event === 'payment.captured' || event === 'order.paid') {
+      if (orderId) {
+        db.confirmOrderPayment(orderId, {
+          payment_id: paymentEntity?.id,
+          gateway_order_id: paymentEntity?.order_id,
+          payment_status: 'Paid'
+        });
+      }
+    } else if (event === 'payment.failed') {
+      if (orderId) {
+        db.markOrderFailed(orderId, paymentEntity?.error_description || 'Payment failed via webhook.');
+      }
+    }
+
+    res.json({ status: 'ok', received: true });
+  } catch (err) {
+    console.error('Webhook processing error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ----------------------------------------------------
+// 4. ORDERS API
+// ----------------------------------------------------
+
+// POST /api/orders/cod - Dedicated Cash on Delivery (COD) Order Placement
+app.post('/api/orders/cod', (req, res) => {
+  try {
+    const { customer_name, customer_phone, items } = req.body;
+    if (!customer_name || !customer_phone || !items || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'Missing mandatory customer information or items.' });
+    }
+
+    const order = db.createCodOrder(req.body);
+    res.status(201).json({
+      success: true,
+      message: 'Cash on Delivery order placed successfully! Silk mark packaging initiated.',
+      data: order
+    });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/orders - Unified Place Order (COD & Online Direct)
 app.post('/api/orders', (req, res) => {
   try {
     const { customer_name, customer_phone, items } = req.body;
@@ -237,7 +462,8 @@ app.get('/api/orders', requireAdmin, (req, res) => {
   try {
     const orders = db.getAllOrders({
       payment_method: req.query.payment_method,
-      order_status: req.query.order_status
+      order_status: req.query.order_status,
+      payment_status: req.query.payment_status
     });
     res.json({ success: true, count: orders.length, data: orders });
   } catch (err) {

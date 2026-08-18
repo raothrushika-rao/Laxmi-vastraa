@@ -1016,7 +1016,15 @@ export function renderCheckoutPage() {
 // 6. ORDER CONFIRMATION / RECEIPT PAGE
 // ----------------------------------------------------
 export function renderOrderSuccessPage() {
-  const order = store.lastPlacedOrder;
+  const hash = window.location.hash || '';
+  const match = hash.match(/[?&]id=([^&]+)/);
+  const orderIdFromUrl = match ? decodeURIComponent(match[1]) : null;
+
+  let order = store.lastPlacedOrder;
+  if (orderIdFromUrl) {
+    const found = (store.orders || []).find(o => o.order_number === orderIdFromUrl || o.order_id === orderIdFromUrl);
+    if (found) order = found;
+  }
 
   if (!order) {
     return `
@@ -1028,18 +1036,21 @@ export function renderOrderSuccessPage() {
     `;
   }
 
+  const isPaid = order.payment_status === 'Paid';
+  const isCod = order.payment_status === 'Pending (COD)' || order.payment_method?.includes('COD');
+
   return `
     <div class="max-w-2xl mx-auto px-4 py-16 animate-fade-in space-y-8">
       
       <!-- Top Success Emblem -->
       <div class="text-center space-y-3">
-        <div class="w-16 h-16 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto border-2 border-green-300 shadow">
-          <span class="material-symbols-outlined text-[36px]">verified</span>
+        <div class="w-16 h-16 ${isPaid ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-800 border-amber-300'} rounded-full flex items-center justify-center mx-auto border-2 shadow">
+          <span class="material-symbols-outlined text-[36px]">${isPaid ? 'verified' : 'inventory_2'}</span>
         </div>
         <span class="text-xs uppercase tracking-[0.25em] text-antique-gold font-bold">Consignment Reserved</span>
         <h1 class="font-serif text-3xl font-bold text-deep-charcoal">Royal Order Confirmed</h1>
         <p class="text-xs text-neutral-600">
-          Thank you, <strong>${order.customer_name}</strong>. Your master weaver heirloom has been scheduled for inspection, packaging in our velvet casket, and insured dispatch.
+          Thank you, <strong>${order.customer_name}</strong>. Your master weaver heirloom has been scheduled for inspection, packaging in our brass-seal velvet casket, and insured dispatch.
         </p>
       </div>
 
@@ -1052,11 +1063,37 @@ export function renderOrderSuccessPage() {
             <strong class="font-mono text-sm text-old-wine font-bold">${order.order_number || order.order_id}</strong>
           </div>
           <div class="text-right">
-            <span class="text-neutral-500 uppercase tracking-wider block text-[10px]">Status</span>
+            <span class="text-neutral-500 uppercase tracking-wider block text-[10px]">Consignment Status</span>
             <span class="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
               ${order.order_status || 'Placed'}
             </span>
           </div>
+        </div>
+
+        <!-- Payment Receipt Banner -->
+        <div class="p-4 rounded-xl border flex items-center justify-between gap-4 text-xs ${
+          isPaid 
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
+            : isCod 
+            ? 'bg-amber-50 border-amber-200 text-amber-950'
+            : 'bg-neutral-50 border-neutral-200 text-neutral-900'
+        }">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[24px] ${isPaid ? 'text-emerald-700' : 'text-amber-700'}">
+              ${isPaid ? 'lock_person' : 'local_shipping'}
+            </span>
+            <div>
+              <strong class="block font-serif text-sm">
+                ${isPaid ? 'Paid via Online Banking (Razorpay Instant Verification)' : 'Payment on Delivery (Cash / Card Handover)'}
+              </strong>
+              <p class="text-[11px] ${isPaid ? 'text-emerald-700' : 'text-amber-700'}">
+                ${isPaid ? `Payment ID: ${order.gateway_payment_id || 'Captured via Gateway'}` : 'Exact cash or card to be collected by royal courier upon doorstep delivery.'}
+              </p>
+            </div>
+          </div>
+          <span class="font-mono font-bold text-xs uppercase px-2.5 py-1 rounded-full ${isPaid ? 'bg-emerald-200 text-emerald-900' : 'bg-amber-200 text-amber-900'}">
+            ${order.payment_status}
+          </span>
         </div>
 
         <!-- Ordered Items Breakdown -->
@@ -1064,13 +1101,13 @@ export function renderOrderSuccessPage() {
           <h3 class="font-serif font-bold text-xs uppercase tracking-wider text-neutral-700">Artisan Sarees Reserved</h3>
           
           <div class="space-y-3 divide-y divide-neutral-100">
-            ${order.items.map(item => `
+            ${(order.items || []).map(item => `
               <div class="pt-3 flex justify-between items-center text-xs">
                 <div class="flex gap-3 items-center">
                   ${item.image_url ? `<img src="${item.image_url}" class="w-12 h-14 object-cover rounded border" />` : ''}
                   <div>
                     <h4 class="font-semibold text-deep-charcoal">${item.saree_title || 'Royal Saree'}</h4>
-                    <p class="text-[11px] text-neutral-500">Qty: ${item.quantity} • Blouse: ${item.blouse_option || 'Unstitched'}</p>
+                    <p class="text-[11px] text-neutral-500">Qty: ${item.quantity} • Blouse: ${item.blouse_option === 'custom-tailored' ? 'Custom Tailored Maggam Work' : 'Unstitched Fabric'}</p>
                   </div>
                 </div>
                 <span class="font-serif font-bold text-deep-charcoal">₹${(item.unit_price * item.quantity).toLocaleString('en-IN')}</span>
@@ -1083,16 +1120,17 @@ export function renderOrderSuccessPage() {
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-200 text-xs text-neutral-700">
           <div>
             <span class="text-[10px] uppercase font-bold text-neutral-400 block mb-1">Dispatch Destination</span>
-            <p class="font-medium">${order.shipping_address}</p>
+            <p class="font-medium text-deep-charcoal">${order.shipping_address}</p>
             <p>${order.city}, ${order.state} - ${order.pincode}</p>
-            <p class="text-neutral-500 mt-1">Phone: ${order.customer_phone}</p>
+            <p class="text-neutral-500 mt-1">Recipient: ${order.customer_name} (${order.customer_phone})</p>
           </div>
 
           <div>
-            <span class="text-[10px] uppercase font-bold text-neutral-400 block mb-1">Payment & Invoice</span>
-            <p><strong>Method:</strong> ${order.payment_method}</p>
-            <p><strong>Payment Status:</strong> ${order.payment_status}</p>
-            <p class="text-base font-serif font-bold text-old-wine mt-2">Total Paid: ₹${order.total_amount.toLocaleString('en-IN')}</p>
+            <span class="text-[10px] uppercase font-bold text-neutral-400 block mb-1">Payment Breakdown</span>
+            <p><strong>Subtotal:</strong> ₹${(order.subtotal || order.total_amount).toLocaleString('en-IN')}</p>
+            ${order.discount > 0 ? `<p class="text-green-700 font-semibold"><strong>Privilege Discount:</strong> -₹${order.discount.toLocaleString('en-IN')}</p>` : ''}
+            <p class="text-green-700"><strong>Insured Shipping:</strong> FREE</p>
+            <p class="text-base font-serif font-bold text-old-wine mt-2">Total Amount: ₹${order.total_amount.toLocaleString('en-IN')}</p>
           </div>
         </div>
 
@@ -1103,8 +1141,8 @@ export function renderOrderSuccessPage() {
         <a href="#catalog" class="bg-old-wine hover:bg-primary text-white text-xs font-bold uppercase tracking-widest px-8 py-3.5 rounded shadow text-center transition-colors">
           Continue Exploring Weaves
         </a>
-        <a href="#home" class="border border-neutral-300 hover:bg-neutral-100 text-deep-charcoal text-xs font-bold uppercase tracking-widest px-8 py-3.5 rounded text-center transition-colors">
-          Return to Atelier Home
+        <a href="#profile" class="border border-antique-gold text-old-wine hover:bg-surface-container text-xs font-bold uppercase tracking-widest px-8 py-3.5 rounded text-center transition-colors">
+          View All Orders in Profile
         </a>
       </div>
 
@@ -1355,8 +1393,13 @@ export function renderAdminPage() {
                     </td>
                     <td class="p-3 font-serif font-bold">₹${order.total_amount.toLocaleString('en-IN')}</td>
                     <td class="p-3">
-                      <span class="font-semibold block">${order.payment_method}</span>
-                      <span class="text-[10px] ${order.payment_status === 'Paid' ? 'text-green-700' : 'text-amber-700'}">${order.payment_status}</span>
+                      <span class="font-semibold block text-[11px] text-deep-charcoal">${order.payment_method}</span>
+                      <span class="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase mt-0.5 ${
+                        order.payment_status === 'Paid' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                        order.payment_status === 'Pending (COD)' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
+                        order.payment_status === 'Failed' ? 'bg-red-100 text-red-800 border border-red-300' :
+                        'bg-slate-100 text-slate-700 border border-slate-300'
+                      }">${order.payment_status}</span>
                     </td>
                     <td class="p-3">
                       <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${

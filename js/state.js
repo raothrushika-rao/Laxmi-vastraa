@@ -1,6 +1,7 @@
 // Laxmi Vastaraa - Reactive State Management with Backend REST API & Firebase User Management
 import { INITIAL_PRODUCTS, PROMO_CODES } from './data.js';
 import { firebaseAuth } from './firebase-config.js';
+import { razorpayClient } from './razorpay-client.js';
 
 class Store {
   constructor() {
@@ -555,27 +556,26 @@ class Store {
     this.notify('CART_UPDATED', this.cart);
   }
 
-  // --- CHECKOUT & ORDER PLACEMENT ---
+  // --- CHECKOUT & 2-STEP ATOMIC PAYMENT WORKFLOW ---
   async placeOrder(orderData) {
     const cartItems = this.getCartDetailed();
     if (cartItems.length === 0) {
-      throw new Error('Your shopping cart is empty.');
+      throw new Error('Your shopping bag is empty.');
     }
 
-    const subtotal = this.getCartSubtotal();
     const discount = this.getCartDiscount();
-    const total = this.getCartTotal();
+    const isCod = orderData.paymentMethod === 'Cash on Delivery (Insured)' || orderData.paymentMethod === 'COD';
 
     const orderPayload = {
       customer_uid: this.currentUser?.uid || 'guest-patron',
       customer_name: orderData.shippingAddress.name || this.currentUser?.full_name || 'Valued Patron',
-      customer_email: orderData.shippingAddress.email || this.currentUser?.email || 'patron@laxmivastaraa.com',
-      customer_phone: orderData.shippingAddress.phone || this.currentUser?.phone_number || '+91 98290 11223',
+      customer_email: orderData.shippingAddress.email || this.currentUser?.email || 'client@laxmivastraa.com',
+      customer_phone: orderData.shippingAddress.phone || this.currentUser?.phone_number || '+91 98290 12345',
       shipping_address: orderData.shippingAddress.address || this.currentUser?.shipping_address?.street || 'Heritage Boulevard',
       city: orderData.shippingAddress.city || this.currentUser?.shipping_address?.city || 'Jaipur',
       state: orderData.shippingAddress.state || this.currentUser?.shipping_address?.state || 'Rajasthan',
       pincode: orderData.shippingAddress.pin || this.currentUser?.shipping_address?.postal_code || '302001',
-      payment_method: orderData.paymentMethod || 'Online Payment',
+      payment_method: isCod ? 'Cash on Delivery (Insured)' : 'Online Payment (Razorpay)',
       discount,
       items: cartItems.map(item => ({
         saree_id: item.product.id,
@@ -584,61 +584,125 @@ class Store {
       }))
     };
 
+    // ----------------------------------------------------
+    // PATH A: CASH ON DELIVERY (COD)
+    // ----------------------------------------------------
+    if (isCod) {
+      try {
+        const res = await fetch('/api/orders/cod', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+        const data = await res.json();
+        if (data.success && data.data) {
+          const placedOrder = data.data;
+          this.lastPlacedOrder = placedOrder;
+          this.orders.unshift(placedOrder);
+          this.clearCart();
+          this.fetchProducts();
+          this.fetchMetrics();
+          this.notify('ORDER_PLACED', placedOrder);
+          this.showToast('Cash on Delivery order confirmed! Silk mark packaging initiated.', 'success');
+          window.location.hash = `#order-success?id=${placedOrder.order_number}`;
+          return placedOrder;
+        } else {
+          throw new Error(data.error || 'Failed to place COD order.');
+        }
+      } catch (err) {
+        this.showToast(err.message || 'Unable to place COD order.', 'error');
+        throw err;
+      }
+    }
+
+    // ----------------------------------------------------
+    // PATH B: ONLINE PAYMENT (RAZORPAY GATEWAY)
+    // ----------------------------------------------------
     try {
-      const res = await fetch('/api/orders', {
+      // Step 1: Initialize Pre-Order Draft on Server
+      const initRes = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload)
       });
-      const data = await res.json();
-      if (data.success && data.data) {
-        this.lastPlacedOrder = data.data;
-        this.orders.unshift(data.data);
-        this.clearCart();
-        this.fetchProducts(); // Refresh stocks
-        this.fetchMetrics();
-        this.notify('ORDER_PLACED', this.lastPlacedOrder);
-        this.showToast('Order confirmed! Heritage heirloom is being prepared.', 'success');
-        return this.lastPlacedOrder;
-      } else {
-        throw new Error(data.error || 'Failed to process order.');
-      }
-    } catch (err) {
-      // Optimistic local placement fallback
-      const fallbackOrder = {
-        order_id: `ord-${Date.now()}`,
-        order_number: `LV-2026-${String(this.orders.length + 1).padStart(3, '0')}`,
-        customer_uid: this.currentUser?.uid || 'guest-patron',
-        customer_name: orderPayload.customer_name,
-        customer_email: orderPayload.customer_email,
-        customer_phone: orderPayload.customer_phone,
-        shipping_address: orderPayload.shipping_address,
-        city: orderPayload.city,
-        state: orderPayload.state,
-        pincode: orderPayload.pincode,
-        payment_method: orderPayload.payment_method,
-        payment_status: orderPayload.payment_method === 'COD' ? 'Pending' : 'Paid',
-        order_status: 'Placed',
-        subtotal,
-        discount,
-        shipping_fee: 0,
-        total_amount: total,
-        created_at: new Date().toISOString(),
-        items: cartItems.map(item => ({
-          saree_id: item.product.id,
-          saree_title: item.product.title,
-          quantity: item.quantity,
-          unit_price: item.product.price,
-          blouse_option: item.blouseOption,
-          image_url: item.product.images?.[0]?.image_url || item.product.images?.[0] || ''
-        }))
-      };
+      const initData = await initRes.json();
 
-      this.lastPlacedOrder = fallbackOrder;
-      this.orders.unshift(fallbackOrder);
-      this.clearCart();
-      this.notify('ORDER_PLACED', fallbackOrder);
-      return fallbackOrder;
+      if (!initData.success || !initData.data) {
+        throw new Error(initData.error || 'Failed to initialize payment gateway.');
+      }
+
+      const gatewayOrder = initData.data;
+
+      // Step 2: Open Razorpay Gateway Modal
+      return new Promise((resolve, reject) => {
+        razorpayClient.openCheckout({
+          orderData: gatewayOrder,
+          onSuccess: async (paymentResponse) => {
+            try {
+              // Verify Cryptographic Signature on Backend
+              const verifyRes = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  order_id: gatewayOrder.order_id,
+                  razorpay_order_id: paymentResponse.razorpay_order_id,
+                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                  razorpay_signature: paymentResponse.razorpay_signature
+                })
+              });
+
+              const verifyData = await verifyRes.json();
+              if (verifyData.success && verifyData.data) {
+                const confirmedOrder = verifyData.data;
+                this.lastPlacedOrder = confirmedOrder;
+                this.orders.unshift(confirmedOrder);
+                this.clearCart(); // Cart is cleared ONLY upon successful payment
+                this.fetchProducts();
+                this.fetchMetrics();
+                this.notify('ORDER_PLACED', confirmedOrder);
+                this.showToast('Payment successful! Royal heirloom order confirmed.', 'success');
+                window.location.hash = `#order-success?id=${confirmedOrder.order_number}`;
+                resolve(confirmedOrder);
+              } else {
+                throw new Error(verifyData.error || 'Payment signature verification failed.');
+              }
+            } catch (vErr) {
+              this.showToast(`Payment Verification: ${vErr.message}`, 'error');
+              reject(vErr);
+            }
+          },
+          onFailure: async (failReason) => {
+            await fetch('/api/payment/failed', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                order_id: gatewayOrder.order_id,
+                reason: failReason
+              })
+            }).catch(() => {});
+
+            this.showToast('Payment failed. Your bag is preserved. Please retry or select Cash on Delivery.', 'error');
+            reject(new Error(failReason));
+          },
+          onDismiss: async () => {
+            await fetch('/api/payment/failed', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                order_id: gatewayOrder.order_id,
+                reason: 'User closed payment window.'
+              })
+            }).catch(() => {});
+
+            this.showToast('Payment window closed. Your bag is saved.', 'warning');
+            reject(new Error('Payment window closed.'));
+          }
+        });
+      });
+
+    } catch (err) {
+      this.showToast(err.message || 'Payment processing error.', 'error');
+      throw err;
     }
   }
 

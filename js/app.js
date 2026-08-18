@@ -61,14 +61,11 @@ function renderApp() {
   }
 
   // Route Security Guards
-  if (route === 'admin' || route === 'admin-add-saree') {
+  if (route === 'admin-add-saree') {
     if (!store.isAdmin()) {
       store.showToast('Access Denied: Administrator Privileges Required', 'error');
-      // If attempting to open full-page add-saree without admin rights, redirect to #home
-      if (route === 'admin-add-saree') {
-        window.location.hash = '#login?redirect=admin';
-        return;
-      }
+      window.location.hash = '#login?redirect=admin-add-saree';
+      return;
     }
   }
 
@@ -471,6 +468,16 @@ function bindEventListeners() {
         emailInput.value = 'radha.sharma@heritage.in';
         passInput.value = 'heritage123';
         document.getElementById('login-submit-btn')?.click();
+      }
+      return;
+    }
+
+    // Admin Page 1-Click Authenticate & Unlock Button
+    if (e.target.closest('#admin-page-quick-login-btn')) {
+      const res = await store.loginWithEmail('admin@laxmivastaraa.com', 'laxmi2026');
+      if (res.success) {
+        store.showToast('Authenticated as Administrator.', 'success');
+        renderApp();
       }
       return;
     }

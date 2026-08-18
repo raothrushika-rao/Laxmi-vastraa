@@ -175,17 +175,15 @@ export function renderHeader() {
             </a>
           `}
 
-          <!-- Admin Portal Badge (If Admin) -->
-          ${isAdmin ? `
-            <a 
-              href="#admin" 
-              class="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-old-wine text-white text-[11px] font-bold uppercase tracking-wider hover:bg-primary transition-colors shadow"
-              title="Admin Studio Portal"
-            >
-              <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
-              <span>Studio</span>
-            </a>
-          ` : ''}
+          <!-- Admin Atelier Studio Badge -->
+          <a 
+            href="#admin" 
+            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full ${isAdmin ? 'bg-old-wine text-white' : 'border border-antique-gold/60 text-old-wine hover:bg-surface-container'} text-[11px] font-bold uppercase tracking-wider transition-colors shadow-sm"
+            title="Admin Atelier Studio"
+          >
+            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+            <span class="hidden sm:inline">Admin Studio</span>
+          </a>
 
           <!-- Mobile Menu Button -->
           <button 

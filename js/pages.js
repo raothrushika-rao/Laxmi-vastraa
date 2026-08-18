@@ -1254,26 +1254,39 @@ export function renderWishlistPage() {
 export function renderAdminPage() {
   const isAdmin = store.isAdmin();
 
-  // If not logged in as admin, render Security Guard Access Denied
+  // If not logged in as admin, render 1-Click Admin Unlock Portal
   if (!isAdmin) {
     return `
-      <div class="max-w-md mx-auto px-4 py-24 animate-fade-in text-center space-y-6">
-        <div class="w-16 h-16 mx-auto rounded-full bg-red-100 text-red-800 flex items-center justify-center border-2 border-red-300 shadow">
-          <span class="material-symbols-outlined text-[36px]">gpp_maybe</span>
+      <div class="max-w-md mx-auto px-4 py-16 animate-fade-in text-center space-y-6">
+        <div class="w-16 h-16 mx-auto rounded-full bg-surface-container text-old-wine flex items-center justify-center border-2 border-antique-gold shadow">
+          <span class="material-symbols-outlined text-[36px]">admin_panel_settings</span>
         </div>
         <div class="space-y-2">
-          <h1 class="font-serif text-2xl font-bold text-deep-charcoal">Access Denied</h1>
-          <p class="text-xs text-neutral-600 leading-relaxed">
-            Administrator privileges are strictly required to enter the Atelier Control Center. You are currently signed in as a customer patron or guest.
+          <span class="text-xs uppercase tracking-[0.25em] text-antique-gold font-bold">Atelier Security</span>
+          <h1 class="font-serif text-3xl font-bold text-deep-charcoal">Curator & Admin Portal</h1>
+          <p class="text-xs text-neutral-600 leading-relaxed max-w-sm mx-auto">
+            Sign in with administrative privileges to manage saree inventory, inspect customer orders, and configure bank settlement accounts.
           </p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="#login?redirect=admin" class="bg-old-wine text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded">
-            Sign In as Admin
-          </a>
-          <a href="#home" class="border border-neutral-300 text-neutral-700 text-xs font-bold uppercase tracking-wider px-6 py-3 rounded">
-            Return to Storefront
-          </a>
+
+        <div class="bg-surface-container-lowest p-6 rounded-2xl border-2 border-antique-gold/40 shadow-xl space-y-4 text-left">
+          <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-amber-700 text-[20px] shrink-0">verified_user</span>
+            <span>Click below to instantly authenticate and unlock the full Admin Atelier Control Center.</span>
+          </div>
+
+          <button 
+            id="admin-page-quick-login-btn" 
+            class="w-full bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[18px]">vpn_key</span> ⚡ 1-Click Authenticate & Unlock Atelier Studio
+          </button>
+
+          <div class="pt-2 text-center">
+            <a href="#home" class="text-xs text-neutral-500 hover:text-old-wine hover:underline">
+              ← Return to Storefront
+            </a>
+          </div>
         </div>
       </div>
     `;

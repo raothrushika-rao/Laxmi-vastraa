@@ -569,7 +569,7 @@ export function renderProductDetailPage(productId) {
           </div>
 
           <!-- Add to Bag / Purchase Action -->
-          <div class="space-y-3 pt-2">
+          <div class="space-y-2.5 pt-2">
             <button 
               id="pdp-add-to-cart-btn"
               data-id="${product.id}"
@@ -578,6 +578,16 @@ export function renderProductDetailPage(productId) {
             >
               <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
               <span>${isOutOfStock ? 'Out of Stock' : 'Add to Royal Shopping Bag'}</span>
+            </button>
+
+            <button 
+              id="pdp-buy-now-btn"
+              data-id="${product.id}"
+              ${isOutOfStock ? 'disabled' : ''}
+              class="w-full bg-surface hover:bg-surface-container border-2 border-antique-gold disabled:opacity-50 text-old-wine font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-[18px]">lock_open</span>
+              <span>Buy Now & Proceed to Checkout</span>
             </button>
           </div>
 
@@ -798,11 +808,66 @@ export function renderCheckoutPage() {
   const user = store.currentUser;
 
   if (totals.items.length === 0) {
+    const featuredSarees = store.getProducts().slice(0, 3);
     return `
-      <div class="max-w-xl mx-auto px-4 py-28 text-center space-y-4">
-        <h2 class="font-serif text-2xl font-bold text-deep-charcoal">Your bag is empty</h2>
-        <p class="text-xs text-neutral-600">Please add sarees to your bag prior to checkout.</p>
-        <a href="#catalog" class="inline-block bg-old-wine text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded">Return to Catalog</a>
+      <div class="max-w-3xl mx-auto px-4 py-16 animate-fade-in space-y-10">
+        <div class="text-center space-y-3">
+          <div class="w-16 h-16 rounded-full bg-antique-gold/10 text-old-wine flex items-center justify-center mx-auto border border-antique-gold/30">
+            <span class="material-symbols-outlined text-[32px]">shopping_bag</span>
+          </div>
+          <span class="text-xs uppercase tracking-[0.25em] text-antique-gold font-bold">Royal Reservation</span>
+          <h1 class="font-serif text-3xl font-bold text-deep-charcoal">Your Shopping Bag is Empty</h1>
+          <p class="text-xs text-neutral-600 max-w-md mx-auto">
+            To proceed through our secure checkout, please select an authentic artisan handloom from our royal atelier.
+          </p>
+          <div class="pt-2">
+            <button 
+              id="quick-add-sample-saree-btn" 
+              class="inline-flex items-center gap-2 bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-xl shadow-lg hover:scale-[1.02] transition-all"
+            >
+              <span class="material-symbols-outlined text-[18px]">bolt</span> 1-Click Add Featured Banarasi & Open Checkout
+            </button>
+          </div>
+        </div>
+
+        <!-- Curated Masterpieces to Reserve Immediately -->
+        <div class="bg-surface-container-lowest p-6 rounded-2xl border border-antique-gold/30 shadow-sm space-y-6">
+          <div class="flex items-center justify-between border-b border-antique-gold/20 pb-3">
+            <h2 class="font-serif font-bold text-base text-deep-charcoal">Recommended Atelier Heirlooms</h2>
+            <a href="#catalog" class="text-xs text-old-wine font-bold hover:underline">View All Sarees →</a>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            ${featuredSarees.map(saree => `
+              <div class="bg-surface rounded-xl border border-neutral-200 overflow-hidden flex flex-col justify-between p-3 space-y-3 hover:border-antique-gold transition-all">
+                <a href="#product/${saree.id}">
+                  <img 
+                    src="${saree.images?.[0]?.image_url || saree.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c'}" 
+                    alt="${saree.title}" 
+                    class="w-full h-40 object-cover rounded-lg"
+                  />
+                </a>
+                <div class="space-y-1">
+                  <span class="text-[9px] uppercase font-bold text-antique-gold tracking-wider">${saree.fabric}</span>
+                  <h3 class="font-serif font-bold text-xs text-deep-charcoal line-clamp-1">${saree.title}</h3>
+                  <div class="font-serif font-bold text-sm text-old-wine">₹${saree.price.toLocaleString('en-IN')}</div>
+                </div>
+                <button 
+                  class="quick-checkout-card-btn w-full bg-old-wine hover:bg-primary text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition-colors"
+                  data-id="${saree.id}"
+                >
+                  <span class="material-symbols-outlined text-[16px]">lock</span> Reserve & Checkout
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="text-center">
+          <a href="#catalog" class="border border-neutral-300 hover:bg-neutral-100 text-neutral-700 text-xs font-bold uppercase tracking-wider px-6 py-3 rounded-lg inline-block">
+            Explore All Handloom Collections
+          </a>
+        </div>
       </div>
     `;
   }

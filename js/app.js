@@ -285,6 +285,43 @@ function bindEventListeners() {
       return;
     }
 
+    // PDP Buy Now & Proceed to Checkout Button
+    if (e.target.closest('#pdp-buy-now-btn')) {
+      const btn = e.target.closest('#pdp-buy-now-btn');
+      const id = btn.getAttribute('data-id');
+      const blouseOption = document.querySelector('input[name="pdp-blouse-option"]:checked')?.value || 'unstitched';
+      if (id) {
+        store.addToCart(id, 1, { blouseOption });
+        store.isCartDrawerOpen = false;
+        renderOverlays();
+        window.location.hash = '#checkout';
+      }
+      return;
+    }
+
+    // Checkout Page 1-Click Quick Add Sample Saree
+    if (e.target.closest('#quick-add-sample-saree-btn')) {
+      const firstSaree = store.getProducts()[0];
+      if (firstSaree) {
+        store.addToCart(firstSaree.id, 1, { blouseOption: 'unstitched' });
+        store.showToast(`Added ${firstSaree.title} to bag`, 'success');
+        renderApp();
+      }
+      return;
+    }
+
+    // Checkout Page Quick Reserve Card Button
+    const quickCheckoutCardBtn = e.target.closest('.quick-checkout-card-btn');
+    if (quickCheckoutCardBtn) {
+      const id = quickCheckoutCardBtn.getAttribute('data-id');
+      if (id) {
+        store.addToCart(id, 1, { blouseOption: 'unstitched' });
+        store.showToast('Artisan saree added to checkout bag', 'success');
+        renderApp();
+      }
+      return;
+    }
+
     // PDP Gallery Thumbnails
     const pdpThumb = e.target.closest('.pdp-thumbnail');
     if (pdpThumb) {

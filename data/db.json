@@ -339,6 +339,524 @@
   ],
   "orders": [
     {
+      "order_id": "ord-1787153665687",
+      "order_number": "LV-2026-140",
+      "customer_uid": "guest-patron",
+      "customer_name": "Princess Gayatri",
+      "customer_email": "gayatri@heritage.in",
+      "customer_phone": "9876500000",
+      "shipping_address": {
+        "address": "City Palace Complex",
+        "city": "Udaipur",
+        "state": "Rajasthan",
+        "pincode": "313001"
+      },
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001",
+      "payment_method": "Cash on Delivery (Insured)",
+      "payment_status": "Paid",
+      "order_status": "Silk Inspected & Sealed",
+      "subtotal": 64000,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 64000,
+      "created_at": "2026-08-19T15:34:25.687Z",
+      "items": [
+        {
+          "id": "item-1787153665687-287",
+          "order_id": "ord-1787153665687",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "unstitched",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ],
+      "updated_at": "2026-08-19T15:34:25.706Z",
+      "paid_at": "2026-08-19T15:34:25.706Z"
+    },
+    {
+      "order_id": "ord-1787153665683",
+      "order_number": "LV-2026-139",
+      "customer_uid": "guest-patron",
+      "customer_name": "Maharani Radhika Devi",
+      "customer_email": "maharani.radhika@heritage.in",
+      "customer_phone": "9876543210",
+      "shipping_address": {
+        "address": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "pincode": "302005"
+      },
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 51000,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 51000,
+      "gateway_order_id": "order_59f159c2407564ee",
+      "created_at": "2026-08-19T15:34:25.683Z",
+      "items": [
+        {
+          "id": "item-1787153665683-970",
+          "order_id": "ord-1787153665683",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153665685",
+      "gateway_signature": "sig_test_verified_royal_sha256",
+      "paid_at": "2026-08-19T15:34:25.686Z",
+      "updated_at": "2026-08-19T15:34:25.686Z"
+    },
+    {
+      "order_id": "ord-1787153665538",
+      "order_number": "LV-2026-138",
+      "customer_uid": "patron-webhook-test",
+      "customer_name": "Begum Noor Jahan",
+      "customer_email": "noor@lucknow.heritage.in",
+      "customer_phone": "+91 96666 55555",
+      "shipping_address": "Nawab Haveli, Hazratganj",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "pincode": "226001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "gateway_order_id": "order_bc1cac58bc37e369",
+      "created_at": "2026-08-19T15:34:25.538Z",
+      "items": [
+        {
+          "id": "item-1787153665538-96",
+          "order_id": "ord-1787153665538",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_hook_1787153665541",
+      "gateway_signature": null,
+      "paid_at": "2026-08-19T15:34:25.541Z",
+      "updated_at": "2026-08-19T15:34:25.584Z"
+    },
+    {
+      "order_id": "ord-1787153665536",
+      "order_number": "LV-2026-137",
+      "customer_uid": "patron-cod-test",
+      "customer_name": "Rani Priyamvada",
+      "customer_email": "priyamvada@jaipur.heritage.in",
+      "customer_phone": "+91 97777 66666",
+      "shipping_address": "Raj Bhavan Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Cash on Delivery (Insured)",
+      "payment_status": "Pending (COD)",
+      "order_status": "Placed",
+      "subtotal": 48500,
+      "discount": 1000,
+      "shipping_fee": 0,
+      "total_amount": 47500,
+      "created_at": "2026-08-19T15:34:25.536Z",
+      "items": [
+        {
+          "id": "item-1787153665536-729",
+          "order_id": "ord-1787153665536",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787153665531",
+      "order_number": "LV-2026-136",
+      "customer_uid": "patron-fail-test",
+      "customer_name": "Princess Ananya",
+      "customer_email": "ananya@heritage.in",
+      "customer_phone": "+91 98111 00000",
+      "shipping_address": "Bungalow 7, Malabar Hill",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400006",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Failed",
+      "order_status": "Draft",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "gateway_order_id": "order_3aa7c008742c32d9",
+      "created_at": "2026-08-19T15:34:25.531Z",
+      "items": [
+        {
+          "id": "item-1787153665531-597",
+          "order_id": "ord-1787153665531",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "failure_reason": "User dismissed Razorpay checkout window.",
+      "updated_at": "2026-08-19T15:34:25.534Z"
+    },
+    {
+      "order_id": "ord-1787153665524",
+      "order_number": "LV-2026-135",
+      "customer_uid": "patron-online-test",
+      "customer_name": "Maharani Divya of Udaipur",
+      "customer_email": "divya@udaipur.heritage.in",
+      "customer_phone": "+91 98290 88888",
+      "shipping_address": "City Palace Lake View Wing",
+      "city": "Udaipur",
+      "state": "Rajasthan",
+      "pincode": "313001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 102000,
+      "discount": 2500,
+      "shipping_fee": 0,
+      "total_amount": 99500,
+      "gateway_order_id": "order_81dea201af025497",
+      "created_at": "2026-08-19T15:34:25.524Z",
+      "items": [
+        {
+          "id": "item-1787153665524-283",
+          "order_id": "ord-1787153665524",
+          "saree_id": "saree-001",
+          "quantity": 2,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153665526",
+      "gateway_signature": "sig_test_1787153665526",
+      "paid_at": "2026-08-19T15:34:25.529Z",
+      "updated_at": "2026-08-19T15:34:25.529Z"
+    },
+    {
+      "order_id": "ord-1787153665470",
+      "order_number": "LV-2026-134",
+      "customer_uid": "usr-test-1787153665458",
+      "customer_name": "Princess Gayatri of Jaipur",
+      "customer_email": "patron.test@heritage.in",
+      "customer_phone": "+91 99999 88888",
+      "shipping_address": "Rambagh Palace Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 66500,
+      "discount": 5000,
+      "shipping_fee": 0,
+      "total_amount": 61500,
+      "gateway_order_id": null,
+      "created_at": "2026-08-19T15:34:25.470Z",
+      "items": [
+        {
+          "id": "item-1787153665470-242",
+          "order_id": "ord-1787153665470",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153665470",
+      "gateway_signature": "sig_direct",
+      "paid_at": "2026-08-19T15:34:25.470Z",
+      "updated_at": "2026-08-19T15:34:25.470Z"
+    },
+    {
+      "order_id": "ord-1787153647146",
+      "order_number": "LV-2026-133",
+      "customer_uid": "guest-patron",
+      "customer_name": "Princess Gayatri",
+      "customer_email": "gayatri@heritage.in",
+      "customer_phone": "9876500000",
+      "shipping_address": {
+        "address": "City Palace Complex",
+        "city": "Udaipur",
+        "state": "Rajasthan",
+        "pincode": "313001"
+      },
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001",
+      "payment_method": "Cash on Delivery (Insured)",
+      "payment_status": "Paid",
+      "order_status": "Silk Inspected & Sealed",
+      "subtotal": 64000,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 64000,
+      "created_at": "2026-08-19T15:34:07.146Z",
+      "items": [
+        {
+          "id": "item-1787153647146-185",
+          "order_id": "ord-1787153647146",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "unstitched",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ],
+      "updated_at": "2026-08-19T15:34:07.170Z",
+      "paid_at": "2026-08-19T15:34:07.170Z"
+    },
+    {
+      "order_id": "ord-1787153647143",
+      "order_number": "LV-2026-132",
+      "customer_uid": "guest-patron",
+      "customer_name": "Maharani Radhika Devi",
+      "customer_email": "maharani.radhika@heritage.in",
+      "customer_phone": "9876543210",
+      "shipping_address": {
+        "address": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "pincode": "302005"
+      },
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 51000,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 51000,
+      "gateway_order_id": "order_f63cb0039e230ffa",
+      "created_at": "2026-08-19T15:34:07.143Z",
+      "items": [
+        {
+          "id": "item-1787153647143-373",
+          "order_id": "ord-1787153647143",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153647145",
+      "gateway_signature": "sig_test_verified_royal_sha256",
+      "paid_at": "2026-08-19T15:34:07.145Z",
+      "updated_at": "2026-08-19T15:34:07.145Z"
+    },
+    {
+      "order_id": "ord-1787153646973",
+      "order_number": "LV-2026-131",
+      "customer_uid": "patron-webhook-test",
+      "customer_name": "Begum Noor Jahan",
+      "customer_email": "noor@lucknow.heritage.in",
+      "customer_phone": "+91 96666 55555",
+      "shipping_address": "Nawab Haveli, Hazratganj",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "pincode": "226001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "gateway_order_id": "order_8eebfcdfd2c9d2ea",
+      "created_at": "2026-08-19T15:34:06.973Z",
+      "items": [
+        {
+          "id": "item-1787153646973-321",
+          "order_id": "ord-1787153646973",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_hook_1787153646975",
+      "gateway_signature": null,
+      "paid_at": "2026-08-19T15:34:06.975Z",
+      "updated_at": "2026-08-19T15:34:07.024Z"
+    },
+    {
+      "order_id": "ord-1787153646971",
+      "order_number": "LV-2026-130",
+      "customer_uid": "patron-cod-test",
+      "customer_name": "Rani Priyamvada",
+      "customer_email": "priyamvada@jaipur.heritage.in",
+      "customer_phone": "+91 97777 66666",
+      "shipping_address": "Raj Bhavan Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Cash on Delivery (Insured)",
+      "payment_status": "Pending (COD)",
+      "order_status": "Placed",
+      "subtotal": 48500,
+      "discount": 1000,
+      "shipping_fee": 0,
+      "total_amount": 47500,
+      "created_at": "2026-08-19T15:34:06.971Z",
+      "items": [
+        {
+          "id": "item-1787153646971-22",
+          "order_id": "ord-1787153646971",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ]
+    },
+    {
+      "order_id": "ord-1787153646966",
+      "order_number": "LV-2026-129",
+      "customer_uid": "patron-fail-test",
+      "customer_name": "Princess Ananya",
+      "customer_email": "ananya@heritage.in",
+      "customer_phone": "+91 98111 00000",
+      "shipping_address": "Bungalow 7, Malabar Hill",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400006",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Failed",
+      "order_status": "Draft",
+      "subtotal": 48500,
+      "discount": 0,
+      "shipping_fee": 0,
+      "total_amount": 48500,
+      "gateway_order_id": "order_3758ac9e9180e935",
+      "created_at": "2026-08-19T15:34:06.966Z",
+      "items": [
+        {
+          "id": "item-1787153646966-918",
+          "order_id": "ord-1787153646966",
+          "saree_id": "saree-001",
+          "quantity": 1,
+          "unit_price": 48500,
+          "blouse_option": "unstitched",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "failure_reason": "User dismissed Razorpay checkout window.",
+      "updated_at": "2026-08-19T15:34:06.970Z"
+    },
+    {
+      "order_id": "ord-1787153646961",
+      "order_number": "LV-2026-128",
+      "customer_uid": "patron-online-test",
+      "customer_name": "Maharani Divya of Udaipur",
+      "customer_email": "divya@udaipur.heritage.in",
+      "customer_phone": "+91 98290 88888",
+      "shipping_address": "City Palace Lake View Wing",
+      "city": "Udaipur",
+      "state": "Rajasthan",
+      "pincode": "313001",
+      "payment_method": "Online Payment (Razorpay)",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 102000,
+      "discount": 2500,
+      "shipping_fee": 0,
+      "total_amount": 99500,
+      "gateway_order_id": "order_6650d76638549803",
+      "created_at": "2026-08-19T15:34:06.961Z",
+      "items": [
+        {
+          "id": "item-1787153646961-779",
+          "order_id": "ord-1787153646961",
+          "saree_id": "saree-001",
+          "quantity": 2,
+          "unit_price": 48500,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Midnight Blue Brocade Banarasi Silk Saree",
+          "image_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuDm6eSds3DlJqh9gMtxAytk8xZQJcf8eOjtj6Kv41wjar3LNzaW9vBJpB8TPxgNSlwr-iek1uRLOps8cB_t1TytQE0hL0mADYDt387SHsBcglqkZ9SWuxUTbfcztl3j3BAhYnf3sF8IN9N8-xc9zT6pAYOBQnmhnp7EerXIyXGOCB2GHba1zhZHeH-jVjElmexAv1RIcBzW2fj_zjWnQi1l-K16j8BA0UmABRtvEJl8XEBMm594ATD5hw"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153646964",
+      "gateway_signature": "sig_test_1787153646964",
+      "paid_at": "2026-08-19T15:34:06.965Z",
+      "updated_at": "2026-08-19T15:34:06.965Z"
+    },
+    {
+      "order_id": "ord-1787153646904",
+      "order_number": "LV-2026-127",
+      "customer_uid": "usr-test-1787153646872",
+      "customer_name": "Princess Gayatri of Jaipur",
+      "customer_email": "patron.test@heritage.in",
+      "customer_phone": "+91 99999 88888",
+      "shipping_address": "Rambagh Palace Estate",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302005",
+      "payment_method": "Online Payment",
+      "payment_status": "Paid",
+      "order_status": "Placed",
+      "subtotal": 66500,
+      "discount": 5000,
+      "shipping_fee": 0,
+      "total_amount": 61500,
+      "gateway_order_id": null,
+      "created_at": "2026-08-19T15:34:06.904Z",
+      "items": [
+        {
+          "id": "item-1787153646904-442",
+          "order_id": "ord-1787153646904",
+          "saree_id": "saree-002",
+          "quantity": 1,
+          "unit_price": 64000,
+          "blouse_option": "custom-tailored",
+          "saree_title": "Crimson & Antique Gold Korvai Kanjeevaram Pattu",
+          "image_url": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80"
+        }
+      ],
+      "gateway_payment_id": "pay_1787153646905",
+      "gateway_signature": "sig_direct",
+      "paid_at": "2026-08-19T15:34:06.905Z",
+      "updated_at": "2026-08-19T15:34:06.905Z"
+    },
+    {
       "order_id": "ord-1787150691726",
       "order_number": "LV-2026-126",
       "customer_uid": "guest-patron",
@@ -5125,7 +5643,7 @@
       "updated_at": "2026-08-18T17:14:57.777Z"
     },
     {
-      "uid": "customer-1787150691702",
+      "uid": "customer-1787153665671",
       "full_name": "Maharani Radhika Devi",
       "email": "maharani.radhika@heritage.in",
       "phone_number": "+91 9123456789",
@@ -5142,7 +5660,7 @@
         "saree-003"
       ],
       "created_at": "2026-08-18T17:16:36.289Z",
-      "updated_at": "2026-08-19T14:44:51.715Z"
+      "updated_at": "2026-08-19T15:34:25.678Z"
     },
     {
       "uid": "usr-test-1787073468164",
@@ -5383,6 +5901,46 @@
       ],
       "created_at": "2026-08-19T14:44:51.458Z",
       "updated_at": "2026-08-19T14:44:51.462Z"
+    },
+    {
+      "uid": "usr-test-1787153646872",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test.1787153646872@heritage.in",
+      "phone_number": "+91 99999 88888",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302005"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002",
+        "saree-004"
+      ],
+      "created_at": "2026-08-19T15:34:06.874Z",
+      "updated_at": "2026-08-19T15:34:06.897Z"
+    },
+    {
+      "uid": "usr-test-1787153665458",
+      "full_name": "Princess Gayatri of Jaipur",
+      "email": "patron.test.1787153665458@heritage.in",
+      "phone_number": "+91 99999 88888",
+      "role": "customer",
+      "shipping_address": {
+        "street": "Rambagh Palace Estate",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "postal_code": "302005"
+      },
+      "wishlist_items": [
+        "saree-001",
+        "saree-002",
+        "saree-004"
+      ],
+      "created_at": "2026-08-19T15:34:25.458Z",
+      "updated_at": "2026-08-19T15:34:25.464Z"
     }
   ],
   "payment_settings": {
@@ -5401,6 +5959,6 @@
     "cod_enabled": true,
     "max_cod_amount": 150000,
     "notification_email": "orders@laxmivastraa.com",
-    "updated_at": "2026-08-19T14:44:51.750Z"
+    "updated_at": "2026-08-19T15:34:25.704Z"
   }
 }

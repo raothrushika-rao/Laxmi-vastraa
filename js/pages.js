@@ -1254,91 +1254,7 @@ export function renderWishlistPage() {
 // 8. ADMIN DASHBOARD & INVENTORY MANAGEMENT PORTAL
 // ----------------------------------------------------
 export function renderAdminPage() {
-  const isAdmin = store.isAdmin();
-
-  // If not logged in as admin, render 1-Click Admin Unlock Portal
-  if (!isAdmin) {
-    return `
-      <div class="max-w-md mx-auto px-4 py-16 animate-fade-in text-center space-y-6">
-        <div class="w-16 h-16 mx-auto rounded-full bg-surface-container text-old-wine flex items-center justify-center border-2 border-antique-gold shadow">
-          <span class="material-symbols-outlined text-[36px]">admin_panel_settings</span>
-        </div>
-        <div class="space-y-2">
-          <span class="text-xs uppercase tracking-[0.25em] text-antique-gold font-bold">Atelier Security</span>
-          <h1 class="font-serif text-3xl font-bold text-deep-charcoal">Curator & Admin Portal</h1>
-          <p class="text-xs text-neutral-600 leading-relaxed max-w-sm mx-auto">
-            Sign in with administrative privileges to manage saree inventory, inspect customer orders, and configure bank settlement accounts.
-          </p>
-        </div>
-
-        <div class="bg-surface-container-lowest p-6 rounded-2xl border-2 border-antique-gold/40 shadow-xl space-y-5 text-left">
-          
-          <!-- Instant 1-Click Authenticate Button -->
-          <button 
-            type="button"
-            id="admin-page-quick-login-btn" 
-            class="w-full bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
-          >
-            <span class="material-symbols-outlined text-[18px]">vpn_key</span> ⚡ 1-Click Authenticate & Unlock Atelier Studio
-          </button>
-
-          <div class="flex items-center my-2">
-            <div class="flex-grow border-t border-neutral-200"></div>
-            <span class="px-3 text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">Or Enter Credentials</span>
-            <div class="flex-grow border-t border-neutral-200"></div>
-          </div>
-
-          <!-- Direct Admin Credentials Form -->
-          <form id="admin-direct-login-form" class="space-y-3.5">
-            <div>
-              <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="admin-login-username">Username or Email</label>
-              <input 
-                type="text" 
-                id="admin-login-username" 
-                required 
-                value="admin"
-                placeholder="admin"
-                class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold focus:ring-1 focus:ring-antique-gold bg-white"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="admin-login-password">Password</label>
-              <input 
-                type="password" 
-                id="admin-login-password" 
-                required 
-                value="laxmi2026"
-                placeholder="laxmi2026"
-                class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold focus:ring-1 focus:ring-antique-gold bg-white"
-              />
-            </div>
-
-            <button 
-              type="submit" 
-              class="w-full bg-antique-gold hover:bg-yellow-600 text-deep-charcoal font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow transition-all flex items-center justify-center gap-2"
-            >
-              <span class="material-symbols-outlined text-[18px]">lock_open</span>
-              <span>Sign In as Administrator</span>
-            </button>
-          </form>
-
-          <div class="p-3 bg-neutral-50 rounded-lg border border-neutral-200 text-[11px] text-neutral-600 flex items-center justify-between">
-            <span>Demo: <strong>admin</strong></span>
-            <span>Password: <strong>laxmi2026</strong></span>
-          </div>
-
-          <div class="pt-2 text-center">
-            <a href="#home" class="text-xs text-neutral-500 hover:text-old-wine hover:underline">
-              ← Return to Storefront
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Authenticated Admin Dashboard
+  // Directly render Authenticated Atelier Studio & Control Center
   const products = store.getProducts();
   const orders = store.getOrders();
   const metrics = store.metrics;
@@ -1899,32 +1815,6 @@ export function renderAdminPage() {
 // 9. DEDICATED FULL-PAGE ADD / EDIT SAREE STUDIO
 // ----------------------------------------------------
 export function renderAdminAddSareePage(sareeId = null) {
-  const isAdmin = store.isAdmin();
-
-  if (!isAdmin) {
-    return `
-      <div class="max-w-md mx-auto px-4 py-24 animate-fade-in text-center space-y-6">
-        <div class="w-16 h-16 mx-auto rounded-full bg-red-100 text-red-800 flex items-center justify-center border-2 border-red-300 shadow">
-          <span class="material-symbols-outlined text-[36px]">gpp_maybe</span>
-        </div>
-        <div class="space-y-2">
-          <h1 class="font-serif text-2xl font-bold text-deep-charcoal">Access Denied</h1>
-          <p class="text-xs text-neutral-600 leading-relaxed">
-            Administrator privileges are strictly required to add or edit sarees.
-          </p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="#login?redirect=admin" class="bg-old-wine text-white text-xs font-bold uppercase tracking-wider px-6 py-3 rounded">
-            Sign In as Admin
-          </a>
-          <a href="#home" class="border border-neutral-300 text-neutral-700 text-xs font-bold uppercase tracking-wider px-6 py-3 rounded">
-            Return to Storefront
-          </a>
-        </div>
-      </div>
-    `;
-  }
-
   const saree = sareeId ? store.getProductById(sareeId) : null;
   const isEditing = !!saree;
   const generatedSku = isEditing ? saree.sku : `LV-BAN-${Math.floor(100 + Math.random() * 900)}`;

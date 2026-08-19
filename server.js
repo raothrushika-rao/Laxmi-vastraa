@@ -599,7 +599,12 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`✨ Laxmi Vastaraa Luxury E-Commerce Suite running on http://localhost:${PORT}`);
-});
+// Export default app for Vercel and serverless platforms
+export default app;
+
+// Start Server in standalone mode
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✨ Laxmi Vastaraa Luxury E-Commerce Suite running on http://localhost:${PORT}`);
+  });
+}

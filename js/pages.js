@@ -1401,15 +1401,18 @@ export function renderAdminPage() {
       </div>
 
       <!-- Tab Buttons -->
-      <div class="flex border-b border-antique-gold/30 text-xs font-bold uppercase tracking-wider gap-6">
-        <button class="admin-tab-btn py-3 border-b-2 ${activeTab === 'inventory' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="inventory">
+      <div class="flex border-b border-antique-gold/30 text-xs font-bold uppercase tracking-wider gap-4 sm:gap-6 overflow-x-auto">
+        <button class="admin-tab-btn py-3 border-b-2 whitespace-nowrap ${activeTab === 'inventory' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="inventory">
           Saree Inventory (${products.length})
         </button>
-        <button class="admin-tab-btn py-3 border-b-2 ${activeTab === 'orders' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="orders">
+        <button class="admin-tab-btn py-3 border-b-2 whitespace-nowrap ${activeTab === 'orders' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="orders">
           Customer Orders (${orders.length})
         </button>
-        <button class="admin-tab-btn py-3 border-b-2 ${activeTab === 'payments' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="payments">
+        <button class="admin-tab-btn py-3 border-b-2 whitespace-nowrap ${activeTab === 'payments' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="payments">
           Payment & Bank Settlement
+        </button>
+        <button class="admin-tab-btn py-3 border-b-2 whitespace-nowrap ${activeTab === 'auth' ? 'border-old-wine text-old-wine' : 'border-transparent text-neutral-500 hover:text-deep-charcoal'}" data-tab="auth">
+          Curator Security & Authentication
         </button>
       </div>
 
@@ -1417,10 +1420,23 @@ export function renderAdminPage() {
       ${activeTab === 'inventory' ? `
         <div class="bg-surface-container-lowest rounded-xl border border-antique-gold/30 shadow-sm overflow-hidden space-y-4 p-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h2 class="font-serif font-bold text-lg text-deep-charcoal">Master Inventory & Stock Control</h2>
-            <a href="#admin/add-saree" class="bg-old-wine hover:bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px]">add</span> Add New Saree
-            </a>
+            <div>
+              <h2 class="font-serif font-bold text-lg text-deep-charcoal">Master Inventory & Stock Control</h2>
+              <p class="text-xs text-neutral-500">Edit pricing, update active inventory counts, or remove sarees from the active catalog.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button 
+                type="button" 
+                id="admin-restore-defaults-btn"
+                class="border border-antique-gold/60 text-old-wine hover:bg-old-wine hover:text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2.5 rounded flex items-center gap-1.5 transition-colors"
+                title="Restore initial 8 master sarees"
+              >
+                <span class="material-symbols-outlined text-[16px]">restart_alt</span> Restore Master Sarees
+              </button>
+              <a href="#admin/add-saree" class="bg-old-wine hover:bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">add</span> Add New Saree
+              </a>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -1467,20 +1483,22 @@ export function renderAdminPage() {
                           ${isLow ? '<span class="text-[10px] bg-red-100 text-red-800 font-bold px-1.5 py-0.5 rounded">Low</span>' : ''}
                         </div>
                       </td>
-                      <td class="p-3 text-right space-x-2">
+                      <td class="p-3 text-right space-x-1.5">
                         <a 
                           href="#admin/edit-saree/${p.id}" 
-                          class="inline-block p-1 text-neutral-600 hover:text-old-wine"
-                          title="Full Page Edit"
+                          class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-surface-container hover:bg-old-wine hover:text-white text-deep-charcoal font-bold text-[11px] transition-colors"
+                          title="Edit Saree Details"
                         >
-                          <span class="material-symbols-outlined text-[18px]">edit</span>
+                          <span class="material-symbols-outlined text-[15px]">edit</span>
+                          <span>Edit</span>
                         </a>
                         <button 
-                          class="admin-delete-saree-btn p-1 text-neutral-400 hover:text-red-700"
+                          class="admin-delete-saree-btn inline-flex items-center gap-1 px-2.5 py-1.5 rounded bg-red-50 hover:bg-red-700 hover:text-white text-red-700 border border-red-200 font-bold text-[11px] transition-colors"
                           data-id="${p.id}"
                           title="Delete Saree"
                         >
-                          <span class="material-symbols-outlined text-[18px]">delete</span>
+                          <span class="material-symbols-outlined text-[15px]">delete</span>
+                          <span>Delete</span>
                         </button>
                       </td>
                     </tr>
@@ -1569,7 +1587,7 @@ export function renderAdminPage() {
             </table>
           </div>
         </div>
-      ` : `
+      ` : activeTab === 'payments' ? `
         <!-- Tab Content: Payment & Bank Settlement Settings -->
         <div class="bg-surface-container-lowest rounded-xl border border-antique-gold/30 shadow-sm p-6 sm:p-8 space-y-8">
           
@@ -1768,7 +1786,110 @@ export function renderAdminPage() {
           </form>
 
         </div>
-      `}
+      ` : activeTab === 'auth' ? `
+        <!-- Tab Content: Curator Security & Authentication -->
+        <div class="bg-surface-container-lowest rounded-xl border border-antique-gold/30 shadow-sm overflow-hidden p-6 space-y-6">
+          
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-neutral-200">
+            <div>
+              <h2 class="font-serif font-bold text-lg text-deep-charcoal">Curator Profile & Access Credentials</h2>
+              <p class="text-xs text-neutral-500">Manage administrator login authentication, role permissions, and active session tokens.</p>
+            </div>
+            <button 
+              id="admin-logout-btn" 
+              type="button"
+              class="border border-red-300 bg-red-50 hover:bg-red-700 hover:text-white text-red-800 text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded transition-colors flex items-center gap-1.5"
+            >
+              <span class="material-symbols-outlined text-[16px]">lock</span> Lock Atelier & Sign Out
+            </button>
+          </div>
+
+          <!-- Session Badge Card -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <div class="p-4 bg-surface-container-low rounded-xl border border-antique-gold/30 space-y-1">
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Authenticated Curator</span>
+              <strong class="font-serif text-sm text-deep-charcoal block">${store.currentUser?.full_name || 'Laxmi Vastaraa Royal Curator'}</strong>
+              <span class="text-xs text-neutral-500 font-mono">${store.currentUser?.email || 'admin@laxmivastraa.com'}</span>
+            </div>
+
+            <div class="p-4 bg-surface-container-low rounded-xl border border-antique-gold/30 space-y-1">
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Role & Privileges</span>
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold text-[10px] uppercase tracking-wider">Master Administrator</span>
+              <span class="text-[11px] text-neutral-500 block">Full Saree Catalog CRUD & Settlement Access</span>
+            </div>
+
+            <div class="p-4 bg-surface-container-low rounded-xl border border-antique-gold/30 space-y-1">
+              <span class="text-[10px] uppercase font-bold text-neutral-400 block">Session Security</span>
+              <div class="flex items-center gap-1.5 text-xs text-green-700 font-bold">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span>Active Verified JWT Token</span>
+              </div>
+              <span class="text-[10px] font-mono text-neutral-400">Token ID: ${store.adminToken ? store.adminToken.slice(0, 14) + '...' : 'Verified Session'}</span>
+            </div>
+
+          </div>
+
+          <!-- Update Admin Credentials Form -->
+          <div class="p-6 bg-surface-container-low/60 rounded-xl border border-antique-gold/20 space-y-4">
+            <div class="space-y-1">
+              <h3 class="font-serif font-bold text-base text-deep-charcoal">Update Administrator Login Credentials</h3>
+              <p class="text-xs text-neutral-500">Change your administrator login username or password for secure Atelier Studio access.</p>
+            </div>
+
+            <form id="admin-update-credentials-form" class="space-y-4 max-w-lg">
+              
+              <div>
+                <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="new-admin-username">Admin Username</label>
+                <input 
+                  type="text" 
+                  id="new-admin-username" 
+                  name="username"
+                  required 
+                  value="admin" 
+                  class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold bg-white"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="new-admin-password">New Password</label>
+                  <input 
+                    type="password" 
+                    id="new-admin-password" 
+                    name="password"
+                    required 
+                    placeholder="New secure password" 
+                    class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold bg-white"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="confirm-admin-password">Confirm New Password</label>
+                  <input 
+                    type="password" 
+                    id="confirm-admin-password" 
+                    name="confirm_password"
+                    required 
+                    placeholder="Confirm new password" 
+                    class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold bg-white"
+                  />
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                class="bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-lg shadow transition-all flex items-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                <span>Save New Credentials</span>
+              </button>
+
+            </form>
+          </div>
+
+        </div>
+      ` : ''}
 
     </div>
   `;

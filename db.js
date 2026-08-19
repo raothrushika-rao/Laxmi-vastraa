@@ -758,6 +758,12 @@ class Database {
     return true;
   }
 
+  resetSareesToDefault() {
+    this.data.sarees = JSON.parse(JSON.stringify(SEED_SAREES));
+    this.save();
+    return this.data.sarees;
+  }
+
   // --- ORDERS CRUD & 2-STEP ATOMIC TRANSACTION FLOW ---
 
   // Step 1: Pre-Order Draft Creation (Stock is checked but NOT yet decremented)

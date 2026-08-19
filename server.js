@@ -524,6 +524,32 @@ app.post('/api/admin/login', (req, res) => {
   return res.status(401).json({ success: false, error: 'Invalid administrator credentials.' });
 });
 
+// POST /api/admin/update-credentials (Protected Admin)
+app.post('/api/admin/update-credentials', requireAdmin, (req, res) => {
+  try {
+    const { new_username, new_password } = req.body;
+    if (new_username) ADMIN_CREDENTIALS.username = new_username.trim();
+    if (new_password) ADMIN_CREDENTIALS.password = new_password;
+    res.json({ 
+      success: true, 
+      message: 'Administrator credentials updated successfully.',
+      data: { username: ADMIN_CREDENTIALS.username }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/reset-catalog (Protected Admin)
+app.post('/api/admin/reset-catalog', requireAdmin, (req, res) => {
+  try {
+    const sarees = db.resetSareesToDefault();
+    res.json({ success: true, message: 'Catalog restored to 8 master heirloom sarees.', data: sarees });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/admin/metrics (Protected Admin)
 app.get('/api/admin/metrics', requireAdmin, (req, res) => {
   try {

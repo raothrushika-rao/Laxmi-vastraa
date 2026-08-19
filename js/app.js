@@ -6,7 +6,8 @@ import {
   renderQuickViewModal, 
   renderCartDrawer, 
   renderSearchModal,
-  renderAdminOrderModal
+  renderAdminOrderModal,
+  renderAdminDeleteSareeModal
 } from './components.js';
 import { 
   renderHomePage, 
@@ -188,6 +189,7 @@ function renderOverlays() {
     ${renderCartDrawer()}
     ${renderSearchModal()}
     ${renderAdminOrderModal()}
+    ${renderAdminDeleteSareeModal()}
   `;
 }
 
@@ -525,11 +527,40 @@ function bindEventListeners() {
       return;
     }
 
+    // Open Saree Delete Confirmation Modal
     const adminDeleteBtn = e.target.closest('.admin-delete-saree-btn');
     if (adminDeleteBtn) {
       const id = adminDeleteBtn.getAttribute('data-id');
-      if (id && confirm('Are you sure you wish to delete this saree from the active catalog?')) {
+      if (id) {
+        store.deletingSareeId = id;
+        renderOverlays();
+      }
+      return;
+    }
+
+    // Cancel Saree Delete
+    if (e.target.closest('#cancel-delete-saree-btn') || e.target.id === 'admin-delete-modal-backdrop') {
+      store.deletingSareeId = null;
+      renderOverlays();
+      return;
+    }
+
+    // Confirm Saree Delete
+    const confirmDelBtn = e.target.closest('#confirm-delete-saree-btn');
+    if (confirmDelBtn) {
+      const id = confirmDelBtn.getAttribute('data-id') || store.deletingSareeId;
+      if (id) {
         await store.deleteProduct(id);
+        store.deletingSareeId = null;
+        renderOverlays();
+      }
+      return;
+    }
+
+    // Restore Default Master Sarees
+    if (e.target.closest('#admin-restore-defaults-btn')) {
+      if (confirm('Restore all 8 original certified heirloom saree masterpieces to the catalog?')) {
+        await store.restoreDefaultProducts();
       }
       return;
     }
@@ -665,6 +696,22 @@ function bindEventListeners() {
         store.showToast('Authenticated as Administrator.', 'success');
         renderApp();
       }
+      return;
+    }
+
+    // Update Admin Credentials Form
+    if (e.target.id === 'admin-update-credentials-form') {
+      e.preventDefault();
+      const newUsername = document.getElementById('new-admin-username')?.value?.trim() || 'admin';
+      const newPassword = document.getElementById('new-admin-password')?.value;
+      const confirmPassword = document.getElementById('confirm-admin-password')?.value;
+
+      if (newPassword !== confirmPassword) {
+        store.showToast('New passwords do not match. Please re-enter.', 'error');
+        return;
+      }
+
+      await store.updateAdminCredentials(newUsername, newPassword);
       return;
     }
 

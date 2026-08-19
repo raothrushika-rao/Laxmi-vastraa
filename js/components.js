@@ -942,3 +942,64 @@ export function renderAdminOrderModal() {
     </div>
   `;
 }
+
+// ----------------------------------------------------
+// ADMIN DELETE SAREE CONFIRMATION MODAL
+// ----------------------------------------------------
+export function renderAdminDeleteSareeModal() {
+  if (!store.deletingSareeId) return '';
+  const saree = store.getProductById(store.deletingSareeId);
+  if (!saree) return '';
+
+  const img = saree.images?.[0]?.image_url || saree.images?.[0] || '';
+
+  return `
+    <div id="admin-delete-modal-backdrop" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+      <div class="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl border-2 border-red-200 animate-scale-up space-y-4 p-6">
+        
+        <div class="flex items-center gap-3 text-red-700">
+          <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[24px]">delete_forever</span>
+          </div>
+          <div>
+            <h3 class="font-serif font-bold text-lg text-deep-charcoal">Delete Saree</h3>
+            <span class="text-[11px] text-neutral-500 font-medium">Permanent Removal from Atelier Catalog</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3 p-3 bg-neutral-50 rounded-xl border border-neutral-200 items-center">
+          <img src="${img}" alt="${saree.title}" class="w-14 h-16 object-cover rounded border shrink-0" />
+          <div class="space-y-0.5 text-xs">
+            <strong class="font-serif block text-deep-charcoal text-sm leading-tight">${saree.title}</strong>
+            <span class="font-mono text-old-wine font-bold block text-[11px]">${saree.sku}</span>
+            <span class="text-neutral-500">${saree.fabric} • ₹${saree.price.toLocaleString('en-IN')}</span>
+          </div>
+        </div>
+
+        <p class="text-xs text-neutral-600 leading-relaxed">
+          Are you sure you wish to delete this saree from the active catalog? This action will immediately remove the saree from the public storefront and archive its inventory.
+        </p>
+
+        <div class="flex gap-3 pt-2">
+          <button 
+            type="button" 
+            id="cancel-delete-saree-btn" 
+            class="flex-1 border border-neutral-300 hover:bg-neutral-100 text-deep-charcoal text-xs font-bold uppercase tracking-wider py-3 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            id="confirm-delete-saree-btn" 
+            data-id="${saree.id}"
+            class="flex-1 bg-red-700 hover:bg-red-800 text-white text-xs font-bold uppercase tracking-wider py-3 rounded-lg shadow transition-colors flex items-center justify-center gap-1.5"
+          >
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+            <span>Delete Saree</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+}

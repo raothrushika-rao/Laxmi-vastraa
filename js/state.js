@@ -97,7 +97,11 @@ class Store {
         if (user.role === 'admin') {
           this.adminToken = `lv-admin-token-${user.uid}`;
           this.adminUser = user;
-          localStorage.setItem('lv_admin_auth_v2', JSON.stringify({ token: this.adminToken, user: this.adminUser }));
+          try {
+            if (typeof localStorage !== 'undefined') {
+              localStorage.setItem('lv_admin_auth_v2', JSON.stringify({ token: this.adminToken, user: this.adminUser }));
+            }
+          } catch (e) {}
         }
 
         // Sync wishlist items from user record if present
@@ -107,7 +111,8 @@ class Store {
         }
       } else {
         // If not logged in as admin via Firebase and no legacy admin
-        if (!localStorage.getItem('lv_admin_auth_v2')) {
+        const hasLocalAdmin = typeof localStorage !== 'undefined' ? localStorage.getItem('lv_admin_auth_v2') : null;
+        if (!hasLocalAdmin) {
           this.adminToken = null;
           this.adminUser = null;
         }
@@ -411,7 +416,46 @@ class Store {
       this.products = this.products.filter(p => p.id !== id);
       this.saveProducts();
       this.notify('PRODUCTS_UPDATED', this.products);
+      this.showToast('Saree removed from catalog.', 'info');
       return true;
+    }
+  }
+
+  async restoreDefaultProducts() {
+    this.products = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+    this.saveProducts();
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (this.adminToken) headers['Authorization'] = `Bearer ${this.adminToken}`;
+      if (this.currentUser?.uid) headers['x-user-uid'] = this.currentUser.uid;
+      await fetch('/api/admin/reset-catalog', { method: 'POST', headers });
+    } catch (e) {}
+    this.fetchMetrics();
+    this.notify('PRODUCTS_UPDATED', this.products);
+    this.showToast('8 certified heirloom master sarees restored to catalog.', 'success');
+    return true;
+  }
+
+  async updateAdminCredentials(newUsername, newPassword) {
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (this.adminToken) headers['Authorization'] = `Bearer ${this.adminToken}`;
+      if (this.currentUser?.uid) headers['x-user-uid'] = this.currentUser.uid;
+
+      const res = await fetch('/api/admin/update-credentials', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ new_username: newUsername, new_password: newPassword })
+      });
+      const data = await res.json();
+      if (data.success) {
+        this.showToast('Admin credentials updated successfully.', 'success');
+        return { success: true };
+      }
+      throw new Error(data.error || 'Failed to update credentials.');
+    } catch (err) {
+      this.showToast(err.message, 'error');
+      return { success: false, error: err.message };
     }
   }
 

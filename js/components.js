@@ -1,5 +1,5 @@
 // Laxmi Vastaraa - Luxury Reusable Components
-import { store } from './state.js';
+import { store } from './state.js?v=3.0';
 
 export function renderHeader() {
   const cartCount = store.getCartCount();

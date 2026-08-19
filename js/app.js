@@ -1,5 +1,5 @@
 // Laxmi Vastaraa - Application Controller & Router with Firebase Auth & RBAC
-import { store } from './state.js';
+import { store } from './state.js?v=3.0';
 import { 
   renderHeader, 
   renderFooter, 
@@ -8,7 +8,7 @@ import {
   renderSearchModal,
   renderAdminOrderModal,
   renderAdminDeleteSareeModal
-} from './components.js';
+} from './components.js?v=3.0';
 import { 
   renderHomePage, 
   renderCatalogPage, 
@@ -23,8 +23,8 @@ import {
   renderRegisterPage,
   renderForgotPasswordPage,
   renderUserProfilePage
-} from './pages.js';
-import { initSilkShader } from './shader.js';
+} from './pages.js?v=3.0';
+import { initSilkShader } from './shader.js?v=3.0';
 
 let cleanupShader = null;
 

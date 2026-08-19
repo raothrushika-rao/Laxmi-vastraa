@@ -1,11 +1,11 @@
 // Laxmi Vastaraa - Luxury Page Layouts & Screens
-import { store } from './state.js';
+import { store } from './state.js?v=3.0';
 import { 
   renderProductCard, 
   renderQuickViewModal, 
   renderCartDrawer, 
   renderSearchModal 
-} from './components.js';
+} from './components.js?v=3.0';
 
 // ----------------------------------------------------
 // 1. HOME / ATELIER SHOWCASE PAGE

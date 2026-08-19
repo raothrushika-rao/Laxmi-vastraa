@@ -1,7 +1,7 @@
 // Laxmi Vastaraa - Reactive State Management with Backend REST API & Firebase User Management
-import { INITIAL_PRODUCTS, PROMO_CODES } from './data.js';
-import { firebaseAuth } from './firebase-config.js';
-import { razorpayClient } from './razorpay-client.js';
+import { INITIAL_PRODUCTS, PROMO_CODES } from './data.js?v=3.0';
+import { firebaseAuth } from './firebase-config.js?v=3.0';
+import { razorpayClient } from './razorpay-client.js?v=3.0';
 
 class Store {
   constructor() {

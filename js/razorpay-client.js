@@ -7,9 +7,13 @@ class RazorpayClient {
 
   // Load official Razorpay Checkout SDK v1
   async loadSDK() {
-    if (window.Razorpay) {
+    if (typeof window !== 'undefined' && window.Razorpay) {
       this.sdkLoaded = true;
       return true;
+    }
+
+    if (typeof document === 'undefined') {
+      return false;
     }
 
     if (this.sdkPromise) {

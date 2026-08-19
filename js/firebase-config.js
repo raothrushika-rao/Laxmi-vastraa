@@ -1,14 +1,42 @@
 // Laxmi Vastaraa - Firebase Authentication & User Management Client SDK
 // Supports Firebase v10+ Modular SDK with live project connection and intelligent local fallback
 
+const getEnv = (key, fallback) => {
+  if (typeof window !== 'undefined' && window.ENV && window.ENV[key]) return window.ENV[key];
+  if (typeof process !== 'undefined' && process.env && process.env[key]) return process.env[key];
+  return fallback;
+};
+
 // Standard Firebase Configuration (can be configured via window.__FIREBASE_CONFIG__ or env)
-export const firebaseConfig = window.__FIREBASE_CONFIG__ || {
-  apiKey: window.ENV?.FIREBASE_API_KEY || "AIzaSyLaxmiVastaraaDemoKey2026",
-  authDomain: window.ENV?.FIREBASE_AUTH_DOMAIN || "laxmi-vastaraa.firebaseapp.com",
-  projectId: window.ENV?.FIREBASE_PROJECT_ID || "laxmi-vastaraa",
-  storageBucket: window.ENV?.FIREBASE_STORAGE_BUCKET || "laxmi-vastaraa.appspot.com",
-  messagingSenderId: window.ENV?.FIREBASE_MESSAGING_SENDER_ID || "1060439647232",
-  appId: window.ENV?.FIREBASE_APP_ID || "1:1060439647232:web:a1b2c3d4e5f6g7h8"
+export const firebaseConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__) || {
+  apiKey: getEnv('FIREBASE_API_KEY', "AIzaSyLaxmiVastaraaDemoKey2026"),
+  authDomain: getEnv('FIREBASE_AUTH_DOMAIN', "laxmi-vastaraa.firebaseapp.com"),
+  projectId: getEnv('FIREBASE_PROJECT_ID', "laxmi-vastaraa"),
+  storageBucket: getEnv('FIREBASE_STORAGE_BUCKET', "laxmi-vastaraa.appspot.com"),
+  messagingSenderId: getEnv('FIREBASE_MESSAGING_SENDER_ID', "1060439647232"),
+  appId: getEnv('FIREBASE_APP_ID', "1:1060439647232:web:a1b2c3d4e5f6g7h8")
+};
+
+const memoryStore = new Map();
+const safeStorage = {
+  getItem: (key) => {
+    try {
+      if (typeof localStorage !== 'undefined') return localStorage.getItem(key);
+    } catch (e) {}
+    return memoryStore.get(key) || null;
+  },
+  setItem: (key, val) => {
+    try {
+      if (typeof localStorage !== 'undefined') return localStorage.setItem(key, val);
+    } catch (e) {}
+    memoryStore.set(key, String(val));
+  },
+  removeItem: (key) => {
+    try {
+      if (typeof localStorage !== 'undefined') return localStorage.removeItem(key);
+    } catch (e) {}
+    memoryStore.delete(key);
+  }
 };
 
 class FirebaseAuthService {
@@ -23,7 +51,7 @@ class FirebaseAuthService {
 
   init() {
     try {
-      const savedUser = localStorage.getItem(this.storageKey);
+      const savedUser = safeStorage.getItem(this.storageKey);
       if (savedUser) {
         this.currentUser = JSON.parse(savedUser);
       }
@@ -46,11 +74,11 @@ class FirebaseAuthService {
   _notify(user) {
     this.currentUser = user;
     if (user) {
-      localStorage.setItem(this.storageKey, JSON.stringify(user));
-      localStorage.setItem(this.tokenKey, `token-${user.uid}-${Date.now()}`);
+      safeStorage.setItem(this.storageKey, JSON.stringify(user));
+      safeStorage.setItem(this.tokenKey, `token-${user.uid}-${Date.now()}`);
     } else {
-      localStorage.removeItem(this.storageKey);
-      localStorage.removeItem(this.tokenKey);
+      safeStorage.removeItem(this.storageKey);
+      safeStorage.removeItem(this.tokenKey);
     }
     this.listeners.forEach(cb => {
       try {
@@ -122,9 +150,10 @@ class FirebaseAuthService {
     // Check predefined / demo accounts
     let userProfile = null;
 
-    if (cleanEmail === 'admin@laxmivastaraa.com' || cleanEmail === 'admin') {
+    const isAdminUser = ['admin', 'admin@laxmivastaraa.com', 'admin@laxmivastraa.com', 'curator', 'laxmi'].includes(cleanEmail);
+    if (isAdminUser) {
       if (password !== 'laxmi2026') {
-        throw new Error('Invalid administrator password. (Demo: laxmi2026)');
+        throw new Error('Invalid administrator password. (Default credentials: admin / laxmi2026)');
       }
       userProfile = {
         uid: 'admin-uid-001',

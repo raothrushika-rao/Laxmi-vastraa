@@ -6,7 +6,7 @@ import { razorpayClient } from './razorpay-client.js';
 class Store {
   constructor() {
     this.subscribers = [];
-    this.products = [];
+    this.products = [...INITIAL_PRODUCTS];
     this.cart = [];
     this.wishlist = [];
     this.orders = [];
@@ -163,6 +163,20 @@ class Store {
     try {
       const res = await firebaseAuth.signInWithEmailAndPassword(email, password);
       this.currentUser = res.user;
+
+      if (res.user.role === 'admin') {
+        this.adminUser = res.user;
+        this.adminToken = 'lv-admin-token-2026';
+        try {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('lv_admin_auth_v2', JSON.stringify({ token: this.adminToken, user: this.adminUser }));
+          }
+        } catch (e) {}
+        this.fetchPaymentSettings();
+        this.fetchMetrics();
+        this.fetchOrders();
+      }
+
       this.showToast(`Welcome back, ${res.user.full_name || 'Patron'}!`, 'success');
       this.notify('AUTH_CHANGED', this.currentUser);
       return { success: true, user: res.user };
@@ -539,9 +553,12 @@ class Store {
     if (!code) return { success: false, message: 'Please enter a coupon code' };
     const cleanCode = code.toUpperCase().trim();
     if (PROMO_CODES[cleanCode]) {
+      const promoDef = PROMO_CODES[cleanCode];
       this.promo = {
         code: cleanCode,
-        ...PROMO_CODES[cleanCode]
+        type: promoDef.discountPercent ? 'percent' : 'flat',
+        value: promoDef.discountPercent || promoDef.flatDiscount || 0,
+        ...promoDef
       };
       this.notify('CART_UPDATED', this.cart);
       this.showToast(`Promo ${cleanCode} applied!`, 'success');
@@ -549,6 +566,11 @@ class Store {
     }
     this.showToast('Invalid coupon code.', 'error');
     return { success: false, message: 'Invalid coupon code. Try HERITAGE10 or ROYAL20' };
+  }
+
+  applyCoupon(code) {
+    const res = this.applyPromo(code);
+    return res.success;
   }
 
   removePromo() {
@@ -791,10 +813,16 @@ class Store {
   getCartDiscount() {
     if (!this.promo) return 0;
     const subtotal = this.getCartSubtotal();
-    if (this.promo.type === 'percent') {
-      return Math.round((subtotal * this.promo.value) / 100);
+    if (this.promo.type === 'percent' || this.promo.discountPercent) {
+      const pct = this.promo.discountPercent || this.promo.value || 0;
+      return Math.round((subtotal * pct) / 100);
     }
-    return Math.min(subtotal, this.promo.value);
+    const flat = this.promo.flatDiscount || this.promo.value || 0;
+    return Math.min(subtotal, flat);
+  }
+
+  getDiscountAmount() {
+    return this.getCartDiscount();
   }
 
   getCartTotal() {

@@ -603,11 +603,15 @@ class Database {
     if (filters.sort) {
       switch (filters.sort) {
         case 'price_asc':
+        case 'price-asc':
         case 'price-low':
+        case 'price_low':
           result.sort((a, b) => a.price - b.price);
           break;
         case 'price_desc':
+        case 'price-desc':
         case 'price-high':
+        case 'price_high':
           result.sort((a, b) => b.price - a.price);
           break;
         case 'newest':
@@ -615,6 +619,10 @@ class Database {
           break;
         case 'rating':
           result.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'bestseller':
+        case 'popular':
+          result.sort((a, b) => (b.reviews_count || 0) - (a.reviews_count || 0));
           break;
         default:
           break;

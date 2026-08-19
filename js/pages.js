@@ -26,6 +26,8 @@ export function renderHomePage() {
             alt="Royal Heritage Banarasi Saree Drape"
             class="w-full h-full object-cover object-center opacity-40 mix-blend-overlay filter brightness-90 contrast-110"
           />
+          <!-- WebGL Interactive Silk Drape Canvas -->
+          <canvas id="hero-silk-canvas" class="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-50 mix-blend-screen"></canvas>
           <div class="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/60 to-transparent"></div>
           <div class="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-primary/80"></div>
         </div>
@@ -1081,7 +1083,7 @@ export function renderCheckoutPage() {
 // 6. ORDER CONFIRMATION / RECEIPT PAGE
 // ----------------------------------------------------
 export function renderOrderSuccessPage() {
-  const hash = window.location.hash || '';
+  const hash = (typeof window !== 'undefined' && window.location && window.location.hash) ? window.location.hash : '';
   const match = hash.match(/[?&]id=([^&]+)/);
   const orderIdFromUrl = match ? decodeURIComponent(match[1]) : null;
 
@@ -1185,17 +1187,17 @@ export function renderOrderSuccessPage() {
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-200 text-xs text-neutral-700">
           <div>
             <span class="text-[10px] uppercase font-bold text-neutral-400 block mb-1">Dispatch Destination</span>
-            <p class="font-medium text-deep-charcoal">${order.shipping_address}</p>
-            <p>${order.city}, ${order.state} - ${order.pincode}</p>
-            <p class="text-neutral-500 mt-1">Recipient: ${order.customer_name} (${order.customer_phone})</p>
+            <p class="font-medium text-deep-charcoal">${typeof order.shipping_address === 'string' ? order.shipping_address : (order.shipping_address?.street || order.shipping_address?.address || 'Palace Heritage Residence')}</p>
+            <p>${order.city || order.shipping_address?.city || 'Jaipur'}, ${order.state || order.shipping_address?.state || 'Rajasthan'} - ${order.pincode || order.shipping_address?.postal_code || order.shipping_address?.pincode || '302001'}</p>
+            <p class="text-neutral-500 mt-1">Recipient: ${order.customer_name || order.shipping_address?.full_name || 'Valued Patron'} ${order.customer_phone || order.shipping_address?.phone ? `(${order.customer_phone || order.shipping_address?.phone})` : ''}</p>
           </div>
 
           <div>
             <span class="text-[10px] uppercase font-bold text-neutral-400 block mb-1">Payment Breakdown</span>
-            <p><strong>Subtotal:</strong> ₹${(order.subtotal || order.total_amount).toLocaleString('en-IN')}</p>
-            ${order.discount > 0 ? `<p class="text-green-700 font-semibold"><strong>Privilege Discount:</strong> -₹${order.discount.toLocaleString('en-IN')}</p>` : ''}
+            <p><strong>Subtotal:</strong> ₹${Number(order.subtotal || order.total_amount || order.pricing?.subtotal || order.pricing?.final_amount || 0).toLocaleString('en-IN')}</p>
+            ${Number(order.discount || order.pricing?.discount || 0) > 0 ? `<p class="text-green-700 font-semibold"><strong>Privilege Discount:</strong> -₹${Number(order.discount || order.pricing?.discount || 0).toLocaleString('en-IN')}</p>` : ''}
             <p class="text-green-700"><strong>Insured Shipping:</strong> FREE</p>
-            <p class="text-base font-serif font-bold text-old-wine mt-2">Total Amount: ₹${order.total_amount.toLocaleString('en-IN')}</p>
+            <p class="text-base font-serif font-bold text-old-wine mt-2">Total Amount: ₹${Number(order.total_amount || order.pricing?.final_amount || (order.subtotal || 0)).toLocaleString('en-IN')}</p>
           </div>
         </div>
 
@@ -1269,18 +1271,62 @@ export function renderAdminPage() {
           </p>
         </div>
 
-        <div class="bg-surface-container-lowest p-6 rounded-2xl border-2 border-antique-gold/40 shadow-xl space-y-4 text-left">
-          <div class="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-center gap-2.5">
-            <span class="material-symbols-outlined text-amber-700 text-[20px] shrink-0">verified_user</span>
-            <span>Click below to instantly authenticate and unlock the full Admin Atelier Control Center.</span>
-          </div>
-
+        <div class="bg-surface-container-lowest p-6 rounded-2xl border-2 border-antique-gold/40 shadow-xl space-y-5 text-left">
+          
+          <!-- Instant 1-Click Authenticate Button -->
           <button 
+            type="button"
             id="admin-page-quick-login-btn" 
             class="w-full bg-old-wine hover:bg-primary text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl shadow-lg hover:scale-[1.01] transition-all flex items-center justify-center gap-2"
           >
             <span class="material-symbols-outlined text-[18px]">vpn_key</span> ⚡ 1-Click Authenticate & Unlock Atelier Studio
           </button>
+
+          <div class="flex items-center my-2">
+            <div class="flex-grow border-t border-neutral-200"></div>
+            <span class="px-3 text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">Or Enter Credentials</span>
+            <div class="flex-grow border-t border-neutral-200"></div>
+          </div>
+
+          <!-- Direct Admin Credentials Form -->
+          <form id="admin-direct-login-form" class="space-y-3.5">
+            <div>
+              <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="admin-login-username">Username or Email</label>
+              <input 
+                type="text" 
+                id="admin-login-username" 
+                required 
+                value="admin"
+                placeholder="admin"
+                class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold focus:ring-1 focus:ring-antique-gold bg-white"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="admin-login-password">Password</label>
+              <input 
+                type="password" 
+                id="admin-login-password" 
+                required 
+                value="laxmi2026"
+                placeholder="laxmi2026"
+                class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold focus:ring-1 focus:ring-antique-gold bg-white"
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              class="w-full bg-antique-gold hover:bg-yellow-600 text-deep-charcoal font-bold text-xs uppercase tracking-widest py-3.5 rounded-lg shadow transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-[18px]">lock_open</span>
+              <span>Sign In as Administrator</span>
+            </button>
+          </form>
+
+          <div class="p-3 bg-neutral-50 rounded-lg border border-neutral-200 text-[11px] text-neutral-600 flex items-center justify-between">
+            <span>Demo: <strong>admin</strong></span>
+            <span>Password: <strong>laxmi2026</strong></span>
+          </div>
 
           <div class="pt-2 text-center">
             <a href="#home" class="text-xs text-neutral-500 hover:text-old-wine hover:underline">
@@ -2143,13 +2189,13 @@ export function renderLoginPage(redirect = 'home') {
         <!-- Form -->
         <form id="auth-login-form" class="space-y-4" data-redirect="${redirect}">
           <div>
-            <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="login-email">Email Address</label>
+            <label class="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1" for="login-email">Email Address or Username</label>
             <input 
-              type="email" 
+              type="text" 
               id="login-email" 
               name="email" 
               required 
-              placeholder="you@domain.com"
+              placeholder="admin or you@domain.com"
               class="w-full text-xs p-3 rounded-lg border border-neutral-300 focus:border-antique-gold focus:ring-1 focus:ring-antique-gold bg-white"
             />
           </div>

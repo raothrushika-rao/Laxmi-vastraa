@@ -655,12 +655,25 @@ function bindEventListeners() {
   // Form Submissions
   document.addEventListener('submit', async (e) => {
     
+    // Direct Admin Portal Login Form
+    if (e.target.id === 'admin-direct-login-form') {
+      e.preventDefault();
+      const username = document.getElementById('admin-login-username')?.value?.trim() || 'admin';
+      const password = document.getElementById('admin-login-password')?.value || 'laxmi2026';
+      const res = await store.loginWithEmail(username, password);
+      if (res.success) {
+        store.showToast('Authenticated as Administrator.', 'success');
+        renderApp();
+      }
+      return;
+    }
+
     // Auth Login Form
     if (e.target.id === 'auth-login-form') {
       e.preventDefault();
       const form = e.target;
       const redirect = form.getAttribute('data-redirect') || 'home';
-      const email = document.getElementById('login-email')?.value;
+      const email = document.getElementById('login-email')?.value?.trim();
       const password = document.getElementById('login-password')?.value;
       
       const res = await store.loginWithEmail(email, password);
@@ -870,7 +883,15 @@ function bindEventListeners() {
 }
 
 // Bootstrap Application
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
   bindEventListeners();
   renderApp();
-});
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
+}

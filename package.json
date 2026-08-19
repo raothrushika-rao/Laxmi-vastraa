@@ -4,8 +4,9 @@
   "description": "Laxmi Vastraa - Luxury Indian Heritage E-Commerce",
   "type": "module",
   "scripts": {
-    "test": "node scratch/test_suite.js",
-    "serve": "python3 -m http.server 3000"
+    "test": "node scratch/test_suite.js && node scratch/test_payment_suite.js && node scratch/test_admin_payment_settings.js && node scratch/e2e_full_system_trial.js && node scratch/test_frontend_render.js",
+    "start": "node server.js",
+    "serve": "node server.js"
   },
   "keywords": [
     "saree",
